@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端系统评审"
+  short_description: "证据驱动地评审前端架构、运行体验、增量风险与上线质量"
+  default_prompt: "使用 $frontend-system-review 对这个前端项目做证据驱动的系统评审，并生成严格校验、可基线比较的交付包。"

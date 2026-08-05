@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "id": "home",
+      "path": "/",
+      "viewports": [
+        { "name": "desktop", "width": 1440, "height": 900 },
+        { "name": "mobile", "width": 375, "height": 812, "isMobile": true, "hasTouch": true }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:frontend-system-review:gate-policy:1.0",
+  "title": "Frontend System Review Gate Policy",
+  "type": "object",
+  "required": ["policy_version"],
+  "properties": {
+    "policy_version": { "const": "1.0" },
+    "evaluation": { "enum": ["all", "new", "new_or_regressed"] },
+    "block_conclusions": {
+      "type": "array",
+      "items": { "enum": ["block", "ready_after_fixes", "ready_with_followups", "acceptable", "unable_to_determine"] }
+    },
+    "block_on": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severities", "statuses"],
+        "properties": {
+          "severities": { "type": "array", "minItems": 1, "items": { "enum": ["P0", "P1", "P2"] } },
+          "statuses": { "type": "array", "minItems": 1, "items": { "enum": ["confirmed", "likely"] } }
+        },
+        "additionalProperties": false
+      }
+    },
+    "max_counts": {
+      "type": "object",
+      "properties": {
+        "P0": { "type": "integer", "minimum": 0 },
+        "P1": { "type": "integer", "minimum": 0 },
+        "P2": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "scoring": {
+      "type": "object",
+      "properties": {
+        "min_total": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "min_evidence_coverage": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "require_final": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "max_unverified_risks": { "type": ["integer", "null"], "minimum": 0 },
+    "require_validation_passed": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

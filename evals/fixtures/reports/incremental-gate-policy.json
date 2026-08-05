@@ -1,0 +1,19 @@
+{
+  "policy_version": "1.0",
+  "evaluation": "new_or_regressed",
+  "block_conclusions": ["block", "ready_after_fixes", "unable_to_determine"],
+  "block_on": [
+    {
+      "severities": ["P0", "P1"],
+      "statuses": ["confirmed"]
+    }
+  ],
+  "max_counts": {},
+  "scoring": {
+    "min_total": null,
+    "min_evidence_coverage": null,
+    "require_final": false
+  },
+  "max_unverified_risks": null,
+  "require_validation_passed": false
+}

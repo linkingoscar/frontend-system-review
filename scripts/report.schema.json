@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:frontend-system-review:report:1.0",
+  "title": "Frontend System Review Report",
+  "type": "object",
+  "required": ["schema_version", "review", "findings", "unverified_risks", "validation"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "review": {
+      "type": "object",
+      "required": ["title", "target", "mode", "depth", "conclusion", "summary", "scope"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "mode": { "enum": ["repository", "change", "runtime", "proposal"] },
+        "depth": { "enum": ["quick", "standard", "deep"] },
+        "conclusion": {
+          "enum": ["block", "ready_after_fixes", "ready_with_followups", "acceptable", "unable_to_determine"]
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "scope": {
+          "type": "object",
+          "required": ["checked", "unchecked", "assumptions"],
+          "properties": {
+            "checked": { "type": "array", "items": { "type": "string" } },
+            "unchecked": { "type": "array", "items": { "type": "string" } },
+            "assumptions": { "type": "array", "items": { "type": "string" } }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "unverified_risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "importance", "gap", "verification"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "importance": { "type": "string", "minLength": 1 },
+          "gap": { "type": "string", "minLength": 1 },
+          "verification": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "strengths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["summary", "evidence"],
+        "properties": {
+          "summary": { "type": "string", "minLength": 1 },
+          "evidence": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "required": ["dimensions"],
+      "properties": {
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["score", "evidence_sufficient", "note"],
+            "properties": {
+              "score": { "type": ["number", "null"], "minimum": 0, "maximum": 5 },
+              "evidence_sufficient": { "type": "boolean" },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "validation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check", "result"],
+        "properties": {
+          "check": { "type": "string", "minLength": 1 },
+          "command_or_steps": { "type": "string" },
+          "result": { "enum": ["passed", "failed", "not_run", "partial"] },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "required": ["kind", "summary"],
+      "properties": {
+        "kind": { "enum": ["source", "runtime", "tool", "inference"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "end_line": { "type": "integer", "minimum": 1 },
+        "quote": { "type": "string" },
+        "url": { "type": "string" },
+        "artifact": { "type": "string" },
+        "viewport": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "finding": {
+      "type": "object",
+      "required": ["id", "severity", "confidence", "status", "dimension", "title", "evidence", "impact", "fix", "verification"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^F-[0-9]{3,}$" },
+        "fingerprint": { "type": "string", "pattern": "^[A-Za-z0-9._:-]{8,128}$" },
+        "severity": { "enum": ["P0", "P1", "P2"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "status": { "enum": ["confirmed", "likely"] },
+        "dimension": {
+          "enum": [
+            "business_architecture_fit",
+            "stack_dependencies_build",
+            "module_boundaries",
+            "types_api_data",
+            "state_routing_rendering",
+            "performance_seo",
+            "ui_responsive_design",
+            "accessibility",
+            "testing",
+            "ci_release_recovery",
+            "security_privacy_supply_chain",
+            "observability_operations"
+          ]
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+        "impact": { "type": "string", "minLength": 1 },
+        "root_cause": { "type": "string" },
+        "fix": { "type": "string", "minLength": 1 },
+        "verification": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "cost": { "enum": ["S", "M", "L", "unknown"] }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

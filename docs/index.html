@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend System Review</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <meta name="description" content="证据驱动的前端系统评审 Skill —— 面向仓库、架构、PR 与运行中 Web 界面的系统级评审">
+</head>
+<body>
+    <nav class="nav" id="nav">
+        <div class="nav__container">
+            <a href="#hero" class="nav__logo">Frontend System Review</a>
+            <button class="nav__toggle" aria-label="切换导航菜单" aria-expanded="false">
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+            </button>
+            <ul class="nav__menu" role="menubar">
+                <li role="none"><a href="#features" role="menuitem" class="nav__link">特性</a></li>
+                <li role="none"><a href="#modes" role="menuitem" class="nav__link">评审模式</a></li>
+                <li role="none"><a href="#discipline" role="menuitem" class="nav__link">核心纪律</a></li>
+                <li role="none"><a href="#workflow" role="menuitem" class="nav__link">工作流</a></li>
+                <li role="none"><a href="#scoring" role="menuitem" class="nav__link">评分与结论</a></li>
+                <li role="none"><a href="#toolchain" role="menuitem" class="nav__link">工具链</a></li>
+                <li role="none"><a href="#quickstart" role="menuitem" class="nav__link">快速开始</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="hero__container">
+                <div class="hero__content">
+                    <h1 class="hero__title">Frontend System Review</h1>
+                    <p class="hero__subtitle">证据驱动的前端系统评审 Skill —— 面向仓库、架构、PR 与运行中 Web 界面的系统级评审，覆盖业务匹配、技术栈、模块边界、类型契约、状态数据流、渲染性能、UI/UX、无障碍、测试、CI/CD、安全与可观测性。</p>
+                </div>
+                <div class="hero__badge">
+                    <span class="badge">证据驱动</span>
+                    <span class="badge">系统级评审</span>
+                    <span class="badge">可重复审计</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="features">
+            <div class="section__container">
+                <h2 class="section__title">核心特性</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-card__icon">📋</div>
+                        <h3 class="feature-card__title">证据驱动</h3>
+                        <p class="feature-card__desc">每条发现都带 file:line、运行证据或测量数据；事实/推断/未知严格分离，绝不编造</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🔄</div>
+                        <h3 class="feature-card__title">四种评审模式</h3>
+                        <p class="feature-card__desc">仓库系统评审 / 变更评审 / 运行时体验评审 / 方案评审</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">📊</div>
+                        <h3 class="feature-card__title">三种深度</h3>
+                        <p class="feature-card__desc">快速扫描 / 标准评审 / 深度审计（默认标准评审）</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🎯</div>
+                        <h3 class="feature-card__title">严格质量门</h3>
+                        <p class="feature-card__desc">P0/P1/P2 分级、置信度分离、评分、证据覆盖率、上线结论，机械校验与 CI 门禁</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🔧</div>
+                        <h3 class="feature-card__title">确定性工具链</h3>
+                        <p class="feature-card__desc">13 个标准库脚本：盘点、变更范围、校验、评分、渲染、基线对比、门禁、SARIF、评审包</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🔁</div>
+                        <h3 class="feature-card__title">可重复审计</h3>
+                        <p class="feature-card__desc">浏览器运行时证据采集（截图、console、LCP/CLS、对比度、axe）+ 32 项 eval 测试</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="modes">
+            <div class="section__container">
+                <h2 class="section__title">评审模式</h2>
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">模式</th>
+                                <th scope="col">适用对象</th>
+                                <th scope="col">输出</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>仓库系统评审</td>
+                                <td>完整项目、目录或技术栈</td>
+                                <td>架构与工程质量报告</td>
+                            </tr>
+                            <tr>
+                                <td>变更评审</td>
+                                <td>PR、diff、提交或若干文件</td>
+                                <td>仅报告变更新增或放大的问题</td>
+                            </tr>
+                            <tr>
+                                <td>运行时体验评审</td>
+                                <td>URL、本地页面、截图或可启动应用</td>
+                                <td>响应式、交互、a11y、性能与视觉问题</td>
+                            </tr>
+                            <tr>
+                                <td>方案评审</td>
+                                <td>RFC、架构图、选型说明</td>
+                                <td>决策风险、替代方案和验证计划</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="discipline">
+            <div class="section__container">
+                <h2 class="section__title">核心纪律</h2>
+                <ol class="discipline-list">
+                    <li class="discipline-list__item">先检查现有材料，再提问</li>
+                    <li class="discipline-list__item">将事实、推断和未知分开，不编造文件、行号、命令结果或指标</li>
+                    <li class="discipline-list__item">每条问题都给出证据、影响、具体修复与验证方法</li>
+                    <li class="discipline-list__item">严重度与置信度分离，证据不足的高影响事项标为"待验证"</li>
+                    <li class="discipline-list__item">先报告会改变结论的问题，再报告打磨项</li>
+                    <li class="discipline-list__item">只在用户要求时修改代码</li>
+                    <li class="discipline-list__item">匹配业务与团队约束，不默认推荐微前端、Monorepo 或重写</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="workflow">
+            <div class="section__container">
+                <h2 class="section__title">工作流</h2>
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">1</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">定义边界</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">2</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">建立项目画像</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">3</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">风险优先扫描</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">4</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">收集可复核证据</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">5</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">执行相关维度</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">6</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">运行时验证</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">7</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">并行调查与独立验证</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">8</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">校准发现</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">9</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">评分与上线结论</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">10</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">交付结果</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="scoring">
+            <div class="section__container">
+                <h2 class="section__title">评分与结论</h2>
+                <div class="scoring-grid">
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">证据状态</h3>
+                        <ul class="scoring-card__list">
+                            <li><span class="badge badge--success">已确认</span></li>
+                            <li><span class="badge badge--info">高可能</span></li>
+                            <li><span class="badge badge--warning">待验证</span></li>
+                            <li><span class="badge badge--neutral">不适用</span></li>
+                        </ul>
+                    </div>
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">严重度</h3>
+                        <ul class="scoring-card__list">
+                            <li><span class="badge badge--danger">P0 阻断上线</span></li>
+                            <li><span class="badge badge--warning">P1 重要</span></li>
+                            <li><span class="badge badge--info">P2 改进</span></li>
+                        </ul>
+                    </div>
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">评分</h3>
+                        <p class="scoring-card__desc">12 个维度 0–5 分，默认权重合计 100；总分与等级 A（85+）B（70+）C（55+）D；证据覆盖率 &lt;70% 标"暂定"</p>
+                    </div>
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">上线结论</h3>
+                        <ul class="scoring-card__list">
+                            <li>阻断上线</li>
+                            <li>修复后可上线</li>
+                            <li>可上线但需跟进</li>
+                            <li>可接受</li>
+                            <li>无法判断</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="scoring-note">任何已确认 P0 优先于总分</p>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="toolchain">
+            <div class="section__container">
+                <h2 class="section__title">工具链</h2>
+                <div class="table-wrapper">
+                    <table class="table table--toolchain">
+                        <thead>
+                            <tr>
+                                <th scope="col">脚本</th>
+                                <th scope="col">说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>inventory_repo.py</code></td>
+                                <td>确定性仓库盘点（框架/工具/配置/风险信号）</td>
+                            </tr>
+                            <tr>
+                                <td><code>collect_change_scope.py</code></td>
+                                <td>变更文件与行范围收集、风险分类</td>
+                            </tr>
+                            <tr>
+                                <td><code>verify_findings.py</code></td>
+                                <td>findings 严格机械校验（--strict）</td>
+                            </tr>
+                            <tr>
+                                <td><code>capture_command.py</code></td>
+                                <td>命令执行与脱敏日志、退出码、哈希保存</td>
+                            </tr>
+                            <tr>
+                                <td><code>score_report.py</code></td>
+                                <td>12 维度评分、等级与证据覆盖率</td>
+                            </tr>
+                            <tr>
+                                <td><code>render_report.py</code></td>
+                                <td>JSON 报告确定性渲染为中文 Markdown</td>
+                            </tr>
+                            <tr>
+                                <td><code>gate_report.py</code></td>
+                                <td>CI 门禁判定（默认阻止 block 类结论与已确认 P0）</td>
+                            </tr>
+                            <tr>
+                                <td><code>export_sarif.py</code></td>
+                                <td>导出 GitHub Code Scanning 兼容 SARIF 2.1.0</td>
+                            </tr>
+                            <tr>
+                                <td><code>compare_reports.py</code></td>
+                                <td>稳定 fingerprint 基线对比（new/resolved/regressed）</td>
+                            </tr>
+                            <tr>
+                                <td><code>build_review_bundle.py</code></td>
+                                <td>一键构建评审包（JSON/MD/SARIF/门禁/manifest）</td>
+                            </tr>
+                            <tr>
+                                <td><code>verify_review_bundle.py</code></td>
+                                <td>评审包哈希校验与证据重验</td>
+                            </tr>
+                            <tr>
+                                <td><code>review_common.py</code></td>
+                                <td>共享常量与 JSON 工具</td>
+                            </tr>
+                            <tr>
+                                <td><code>runtime_audit.cjs</code></td>
+                                <td>Playwright 浏览器证据采集（启发式，不自动定级）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="references">
+            <div class="section__container">
+                <h2 class="section__title">参考资料</h2>
+                <div class="references-grid">
+                    <div class="reference-item">
+                        <span class="reference-item__name">checklist.md</span>
+                        <span class="reference-item__desc">工程与架构评审清单（12 章节）</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">web-quality.md</span>
+                        <span class="reference-item__desc">Web 运行时质量（8 维度）</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">visual-design.md</span>
+                        <span class="reference-item__desc">视觉与设计系统评审</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">evidence-and-scoring.md</span>
+                        <span class="reference-item__desc">证据/严重度/评分体系</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">report-template.md</span>
+                        <span class="reference-item__desc">报告模板（3 种格式）</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">tooling.md</span>
+                        <span class="reference-item__desc">工具说明</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">orchestration.md</span>
+                        <span class="reference-item__desc">并行调查与独立验证</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="testing">
+            <div class="section__container">
+                <h2 class="section__title">测试</h2>
+                <p class="section__text">32 项 eval 测试（<code>python -m unittest discover -s evals</code>），通过 subprocess 真实调用脚本，覆盖盘点、证据校验、P0 门、评分、渲染、命令脱敏、运行时浏览器采集、基线门禁、SARIF、评审包与篡改检测。</p>
+            </div>
+        </section>
+
+        <section class="section" id="quickstart">
+            <div class="section__container">
+                <h2 class="section__title">快速开始</h2>
+                <div class="quickstart-steps">
+                    <div class="quickstart-step">
+                        <div class="quickstart-step__number">1</div>
+                        <div class="quickstart-step__content">
+                            <p class="quickstart-step__text">将本 skill 放入你的 opencode skills 目录（或按项目配置引用）</p>
+                        </div>
+                    </div>
+                    <div class="quickstart-step">
+                        <div class="quickstart-step__number">2</div>
+                        <div class="quickstart-step__content">
+                            <p class="quickstart-step__text">发起评审：仓库路径 / PR 链接 / 线上 URL / 方案文档，skill 自动选择模式与深度</p>
+                        </div>
+                    </div>
+                    <div class="quickstart-step">
+                        <div class="quickstart-step__number">3</div>
+                        <div class="quickstart-step__content">
+                            <p class="quickstart-step__text">正式交付：报告保存为 JSON 并通过 <code>build_review_bundle.py</code> 生成评审包</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <p class="footer__text">
+                <a href="https://github.com/anthropics/opencode" class="footer__link" target="_blank" rel="noopener noreferrer">GitHub 仓库</a>
+            </p>
+            <p class="footer__copyright">Frontend System Review Skill</p>
+        </div>
+    </footer>
+
+    <script src="assets/main.js"></script>
+</body>
+</html>

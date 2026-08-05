@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "review": {
+    "title": "Fixture review",
+    "target": "vite-risky",
+    "mode": "repository",
+    "depth": "standard",
+    "conclusion": "ready_with_followups",
+    "summary": "One source-backed issue requires tracked remediation.",
+    "scope": {
+      "checked": ["source and configuration"],
+      "unchecked": ["authenticated runtime"],
+      "assumptions": []
+    }
+  },
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "P1",
+      "confidence": "high",
+      "status": "confirmed",
+      "dimension": "security_privacy_supply_chain",
+      "title": "Untrusted HTML reaches a DOM sink",
+      "evidence": [
+        {
+          "kind": "source",
+          "summary": "The fixture assigns HTML directly to document.body.innerHTML.",
+          "file": "src/evidence.ts",
+          "line": 3,
+          "quote": "document.body.innerHTML = unsafeHtml;"
+        }
+      ],
+      "impact": "Scriptable HTML can execute in the page context if the value becomes untrusted.",
+      "fix": "Render text or sanitize with an allowlist at a trusted boundary.",
+      "verification": ["Run an XSS regression test with event-handler and scriptable URL payloads."],
+      "cost": "S"
+    }
+  ],
+  "unverified_risks": [
+    {
+      "title": "Input trust boundary is unknown",
+      "importance": "It determines exploitability.",
+      "gap": "The fixture has no backend contract.",
+      "verification": "Trace the value to its production source and sanitization boundary."
+    }
+  ],
+  "strengths": [],
+  "scoring": {
+    "dimensions": {
+      "business_architecture_fit": {
+        "score": 4,
+        "evidence_sufficient": true,
+        "note": "Fixture context is clear."
+      },
+      "stack_dependencies_build": {
+        "score": 2,
+        "evidence_sufficient": false,
+        "note": "Build was not executed."
+      },
+      "accessibility": {
+        "score": null,
+        "evidence_sufficient": false,
+        "note": "Not assessed."
+      }
+    }
+  },
+  "validation": [
+    {
+      "check": "Source citation verification",
+      "command_or_steps": "verify_findings.py --strict",
+      "result": "passed",
+      "notes": "Fixture expectation"
+    }
+  ]
+}

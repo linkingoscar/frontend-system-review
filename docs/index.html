@@ -23,6 +23,7 @@
                 <li role="none"><a href="#workflow" role="menuitem" class="nav__link">工作流</a></li>
                 <li role="none"><a href="#scoring" role="menuitem" class="nav__link">评分与结论</a></li>
                 <li role="none"><a href="#toolchain" role="menuitem" class="nav__link">工具链</a></li>
+                <li role="none"><a href="#install" role="menuitem" class="nav__link">安装</a></li>
                 <li role="none"><a href="#quickstart" role="menuitem" class="nav__link">快速开始</a></li>
                 <li role="none" class="nav__lang"><a href="index.en.html" role="menuitem" class="nav__link nav__lang-link">English</a></li>
             </ul>
@@ -357,7 +358,54 @@
             </div>
         </section>
 
-        <section class="section" id="quickstart">
+        <section class="section" id="install">
+            <div class="section__container">
+                <h2 class="section__title">跨平台安装</h2>
+                <p class="section__text">兼容 Agent Skills 开放标准（agentskills.io），支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台。完整安装指南见 INSTALLATION.md。</p>
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">平台</th>
+                                <th scope="col">安装方式</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>通用（推荐）</td>
+                                <td>复制到 ~/.agents/skills/frontend-system-review/（Codex、Gemini、Cursor、Copilot、Zed、Windsurf、OpenCode 原生读取）</td>
+                            </tr>
+                            <tr>
+                                <td>Codex</td>
+                                <td>复制到 ~/.agents/skills/ 或 ~/.codex/skills/，会话内 /skills 查看</td>
+                            </tr>
+                            <tr>
+                                <td>Claude Code</td>
+                                <td>复制到 ~/.claude/skills/ 或 .claude/skills/，会话内 /skills 查看</td>
+                            </tr>
+                            <tr>
+                                <td>OpenCode</td>
+                                <td>复制到 ~/.config/opencode/skills/ 或 .opencode/skills/</td>
+                            </tr>
+                            <tr>
+                                <td>Gemini CLI</td>
+                                <td>gemini skills install linkingoscar/frontend-system-review</td>
+                            </tr>
+                            <tr>
+                                <td>Cline</td>
+                                <td>复制到 ~/.cline/skills/（需在设置中启用 Skills 实验功能）</td>
+                            </tr>
+                            <tr>
+                                <td>一键脚本</td>
+                                <td>./install.sh（Windows: install.ps1）自动安装到全部平台</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="quickstart">
             <div class="section__container">
                 <h2 class="section__title">快速开始</h2>
                 <div class="quickstart-steps">

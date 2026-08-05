@@ -23,6 +23,7 @@
                 <li role="none"><a href="#workflow" role="menuitem" class="nav__link">Workflow</a></li>
                 <li role="none"><a href="#scoring" role="menuitem" class="nav__link">Scoring & Verdicts</a></li>
                 <li role="none"><a href="#toolchain" role="menuitem" class="nav__link">Toolchain</a></li>
+                <li role="none"><a href="#install" role="menuitem" class="nav__link">Install</a></li>
                 <li role="none"><a href="#quickstart" role="menuitem" class="nav__link">Quick Start</a></li>
                 <li role="none" class="nav__lang"><a href="index.html" role="menuitem" class="nav__link nav__lang-link">中文</a></li>
             </ul>
@@ -357,7 +358,54 @@
             </div>
         </section>
 
-        <section class="section" id="quickstart">
+        <section class="section" id="install">
+            <div class="section__container">
+                <h2 class="section__title">Cross-Platform Installation</h2>
+                <p class="section__text">Compatible with the Agent Skills open standard (agentskills.io). Works with Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more. Full guide: INSTALLATION.md.</p>
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Platform</th>
+                                <th scope="col">Installation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Universal (recommended)</td>
+                                <td>Copy to ~/.agents/skills/frontend-system-review/ (natively read by Codex, Gemini, Cursor, Copilot, Zed, Windsurf, OpenCode)</td>
+                            </tr>
+                            <tr>
+                                <td>Codex</td>
+                                <td>Copy to ~/.agents/skills/ or ~/.codex/skills/, check with /skills in session</td>
+                            </tr>
+                            <tr>
+                                <td>Claude Code</td>
+                                <td>Copy to ~/.claude/skills/ or .claude/skills/, check with /skills in session</td>
+                            </tr>
+                            <tr>
+                                <td>OpenCode</td>
+                                <td>Copy to ~/.config/opencode/skills/ or .opencode/skills/</td>
+                            </tr>
+                            <tr>
+                                <td>Gemini CLI</td>
+                                <td>gemini skills install linkingoscar/frontend-system-review</td>
+                            </tr>
+                            <tr>
+                                <td>Cline</td>
+                                <td>Copy to ~/.cline/skills/ (enable Skills in settings first)</td>
+                            </tr>
+                            <tr>
+                                <td>One-click script</td>
+                                <td>./install.sh (Windows: install.ps1) installs to all platforms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="quickstart">
             <div class="section__container">
                 <h2 class="section__title">Quick Start</h2>
                 <div class="quickstart-steps">

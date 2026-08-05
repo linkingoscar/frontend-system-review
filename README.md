@@ -97,9 +97,32 @@ python -m unittest discover -s evals
 
 32 项测试通过 subprocess 真实调用脚本,覆盖:仓库盘点、证据校验(越界行号/路径逃逸/重复指纹)、P0 门、评分与覆盖率、Markdown 渲染稳定性、命令脱敏与退出码、运行时浏览器采集(桌面+移动视口、溢出/对比度/axe)、`--fail-on-budget`、基线门禁、SARIF、评审包构建与 SHA-256 篡改检测。运行时相关测试在设置 `FRONTEND_REVIEW_NODE_MODULES` 后执行,否则自动跳过。
 
+## 跨平台安装
+
+兼容 [Agent Skills 开放规范](https://agentskills.io/specification),支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台——各平台仅安装目录不同,格式零改动。完整指南见 [INSTALLATION.md](./INSTALLATION.md)。
+
+```bash
+./install.sh            # macOS / Linux 一键安装到全部平台
+# Windows:
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+# 仅安装指定平台:
+./install.sh --platform claude,opencode
+```
+
+| 平台 | 用户级目录 | 会话内验证 |
+|---|---|---|
+| Codex | `~/.agents/skills/` | `/skills` |
+| Claude Code | `~/.claude/skills/` | `/skills` |
+| OpenCode | `~/.config/opencode/skills/` | `skill` 工具列表 |
+| Gemini CLI | `~/.gemini/skills/` | `gemini skills list` |
+| Cline | `~/.cline/skills/` | Skills 标签页 |
+| Cursor | `~/.cursor/skills/` | Rules → Agent Decides |
+| Copilot | `~/.copilot/skills/` | Skills 标签页 |
+| 通用(推荐) | `~/.agents/skills/`(Codex、Gemini、Cursor、Copilot、Zed、Windsurf、OpenCode 原生读取) | `/skills` |
+
 ## 快速开始
 
-1. **安装**:将本目录放入你的 opencode skills 目录,或按项目配置引用该 skill。
+1. **安装**:见 [跨平台安装](#跨平台安装) 与 [INSTALLATION.md](./INSTALLATION.md)。
 2. **发起评审**:提供仓库路径、PR 链接、线上 URL 或方案文档;skill 自动选择评审模式与深度。
 3. **正式交付**:报告保存为符合 `scripts/report.schema.json` 的 JSON,通过 `build_review_bundle.py` 一键生成已校验评审包(JSON/Markdown/SARIF/门禁/manifest)。
 
@@ -108,7 +131,9 @@ python -m unittest discover -s evals
 ```text
 frontend-system-review/
 ├── SKILL.md                     # skill 主定义(评审纪律、模式、工作流)
-├── agents/openai.yaml           # 前端展示配置
+├── agents/openai.yaml           # skill 前端展示配置(Codex/ChatGPT 桌面端元数据)
+├── INSTALLATION.md / .en.md     # 跨平台安装指南(中/英)
+├── install.sh / install.ps1     # 一键安装脚本(macOS/Linux / Windows)
 ├── references/                  # 7 份按需加载的评审参考资料
 ├── scripts/                     # 13 个确定性工具脚本 + 3 个 schema 契约
 ├── evals/                       # 32 项 unittest 测试与 fixtures

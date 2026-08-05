@@ -97,9 +97,32 @@ python -m unittest discover -s evals
 
 32 tests invoke the scripts through subprocess, covering: repo inventory; evidence validation (out-of-range line numbers, path escape, duplicate fingerprints); P0 gate; scoring & coverage; Markdown rendering stability; command redaction & exit codes; runtime browser collection (desktop + mobile viewports, overflow/contrast/axe); `--fail-on-budget`; baseline gating; SARIF export; bundle build and SHA-256 tamper detection. Runtime-dependent tests run when `FRONTEND_REVIEW_NODE_MODULES` is set, otherwise they skip.
 
+## Cross-Platform Installation
+
+Compatible with the [Agent Skills open standard](https://agentskills.io/specification). Works with Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more — only the install directory differs per platform; the format requires zero changes. Full guide: [INSTALLATION.en.md](./INSTALLATION.en.md).
+
+```bash
+./install.sh            # macOS / Linux: install to all platforms
+# Windows:
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+# Specific platforms only:
+./install.sh --platform claude,opencode
+```
+
+| Platform | User-level directory | Verify in session |
+|---|---|---|
+| Codex | `~/.agents/skills/` | `/skills` |
+| Claude Code | `~/.claude/skills/` | `/skills` |
+| OpenCode | `~/.config/opencode/skills/` | `skill` tool list |
+| Gemini CLI | `~/.gemini/skills/` | `gemini skills list` |
+| Cline | `~/.cline/skills/` | Skills tab |
+| Cursor | `~/.cursor/skills/` | Rules → Agent Decides |
+| Copilot | `~/.copilot/skills/` | Skills tab |
+| Universal (recommended) | `~/.agents/skills/` (natively read by Codex, Gemini, Cursor, Copilot, Zed, Windsurf, OpenCode) | `/skills` |
+
 ## Quick Start
 
-1. **Install**: put this directory into your opencode skills directory, or reference the skill per-project.
+1. **Install**: see [Cross-Platform Installation](#cross-platform-installation) and [INSTALLATION.en.md](./INSTALLATION.en.md).
 2. **Request a review**: provide a repo path, PR link, live URL, or proposal document; the skill picks the mode and depth automatically.
 3. **Formal delivery**: persist the report as JSON conforming to `scripts/report.schema.json`, then produce the validated review bundle (JSON/Markdown/SARIF/gate/manifest) with `build_review_bundle.py`.
 
@@ -108,7 +131,9 @@ python -m unittest discover -s evals
 ```text
 frontend-system-review/
 ├── SKILL.md                     # skill definition (disciplines, modes, workflow)
-├── agents/openai.yaml           # agent frontend display config
+├── agents/openai.yaml           # skill frontend metadata (Codex/ChatGPT desktop)
+├── INSTALLATION.md / .en.md     # cross-platform install guides (CN/EN)
+├── install.sh / install.ps1     # one-click install scripts (macOS/Linux / Windows)
 ├── references/                  # 7 on-demand review reference docs
 ├── scripts/                     # 13 deterministic tool scripts + 3 schema contracts
 ├── evals/                       # 32 unittest tests & fixtures

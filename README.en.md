@@ -99,7 +99,7 @@ python -m unittest discover -s evals
 
 ## Cross-Platform Installation
 
-Compatible with the [Agent Skills open standard](https://agentskills.io/specification). Works with Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more — only the install directory differs per platform; the format requires zero changes. Full guide: [INSTALLATION.en.md](./INSTALLATION.en.md).
+Compatible with the [Agent Skills open standard](https://agentskills.io/specification). Works with Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more — only the install directory differs per platform; the format requires zero changes. Full guide: [INSTALLATION.en.md](./INSTALLATION.en.md). **Easiest: paste the repo link to your AI and let it read SKILL.md directly.**
 
 ```bash
 ./install.sh            # macOS / Linux: install to all platforms

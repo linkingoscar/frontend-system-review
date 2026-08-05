@@ -9,7 +9,14 @@
 
 ## 快速安装
 
-### 方式一:一键安装脚本(推荐)
+### 方式一:直接把仓库交给 AI(最简单)
+
+把本仓库链接粘贴给你正在使用的 AI 工具,让它自行安装或直接按 SKILL.md 工作:
+
+- 在支持 skill 的编码代理(Codex、Claude Code、OpenCode 等)会话中直接说:**"安装 https://github.com/linkingoscar/frontend-system-review 这个 skill"**,AI 会自行克隆到对应平台的目录;
+- 或直接把 [SKILL.md](./SKILL.md) 的内容粘贴进对话,AI 即可按其中的评审纪律与工作流执行——适用于任何对话式 AI(ChatGPT、Claude、Gemini 等),无需本地安装。
+
+### 方式二:一键安装脚本(推荐)
 
 ```bash
 # macOS / Linux
@@ -41,17 +48,31 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 > Windows 版默认复制(符号链接需要管理员权限);Unix 版默认复制,`--link` 可选。复制时会排除 `.git` 与安装脚本自身。
 
-### 方式二:手动复制
-
-把本仓库(或其中 skill 内容)复制到目标平台的 skills 目录,目录名保持 `frontend-system-review`:
+### 方式三:git clone 安装(每平台一条命令)
 
 ```bash
-# 以 Claude Code 为例
-mkdir -p ~/.claude/skills
-cp -R frontend-system-review ~/.claude/skills/
+# Codex(官方路径 ~/.agents/skills;社区常用 ~/.codex/skills)
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.agents/skills/frontend-system-review
+
+# Claude Code
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.claude/skills/frontend-system-review
+
+# OpenCode
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.config/opencode/skills/frontend-system-review
+
+# Cursor
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cursor/skills/frontend-system-review
+
+# Cline
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cline/skills/frontend-system-review
+
+# 项目级(团队共享):在项目目录下执行
+git clone https://github.com/linkingoscar/frontend-system-review.git .agents/skills/frontend-system-review
 ```
 
-### 方式三:平台原生命令
+> git clone 会把整个仓库(含 `.git`、`docs/`、安装脚本)都装进去,skill 加载时只读取 `SKILL.md` 及支撑文件,不影响使用;若只想装 skill 本体,用方式二的一键脚本。
+
+### 方式四:平台原生命令
 
 ```bash
 # Gemini CLI
@@ -61,7 +82,7 @@ gemini skills install linkingoscar/frontend-system-review --scope user
 npx skills add linkingoscar/frontend-system-review -a "Codex" -g -y
 ```
 
-### 方式四:symlink Hub(一次安装,所有 agent 可见)
+### 方式五:symlink Hub(一次安装,所有 agent 可见)
 
 以 `~/.agents/skills` 为唯一真实目录,其余目录全部符号链接过去(Codex、Gemini、Cursor、Copilot、Zed、Windsurf、OpenCode 原生读取 `~/.agents/skills`):
 
@@ -207,14 +228,6 @@ rm -rf ~/.claude/skills/frontend-system-review
 # Windows
 Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\skills\frontend-system-review"
 ```
-
-## 待确认事项
-
-以下信息以官方文档为准,标注社区差异:
-
-1. `~/.codex/skills/` 是否为 Codex 现行合法路径——官方文档仅列出 `~/.agents/skills/`,但社区安装工具仍普遍写入前者,脚本保留两个目录以兼容;
-2. Codex AGENTS.md 的 `@path`/`@agent` 引用扩展是否已合并进正式版(GitHub issue #6038 / #28739,状态未核实);
-3. Cursor 读取 `.codex/skills/` 兼容目录的版本门槛未在文档中明确。
 
 ## 参考资料
 

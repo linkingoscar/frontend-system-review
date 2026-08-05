@@ -99,7 +99,7 @@ python -m unittest discover -s evals
 
 ## 跨平台安装
 
-兼容 [Agent Skills 开放规范](https://agentskills.io/specification),支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台——各平台仅安装目录不同,格式零改动。完整指南见 [INSTALLATION.md](./INSTALLATION.md)。
+兼容 [Agent Skills 开放规范](https://agentskills.io/specification),支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台——各平台仅安装目录不同,格式零改动。完整指南见 [INSTALLATION.md](./INSTALLATION.md)。**最简单的方式:把仓库链接粘贴给你的 AI,让它直接读取 SKILL.md 使用。**
 
 ```bash
 ./install.sh            # macOS / Linux 一键安装到全部平台

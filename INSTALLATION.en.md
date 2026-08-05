@@ -9,7 +9,14 @@
 
 ## Quick Install
 
-### Option 1: One-click install scripts (recommended)
+### Option 1: Hand the repo to your AI (easiest)
+
+Paste the repo link into the AI tool you are using and let it install or work directly:
+
+- In a coding agent session that supports skills (Codex, Claude Code, OpenCode, etc.), simply say: **"install the skill at https://github.com/linkingoscar/frontend-system-review"** — the AI clones it into the right directory for your platform.
+- Or paste the contents of [SKILL.md](./SKILL.md) into the conversation — the AI follows its review disciplines and workflow directly. Works with any conversational AI (ChatGPT, Claude, Gemini, etc.), no local install needed.
+
+### Option 2: One-click install scripts (recommended)
 
 ```bash
 # macOS / Linux
@@ -41,17 +48,31 @@ Script arguments:
 
 > Windows version copies by default (symlinks need admin rights); Unix version copies by default, `--link` optional. Copy excludes `.git` and the install scripts themselves.
 
-### Option 2: Manual copy
-
-Copy this repository (or its skill contents) into the target platform's skills directory, keeping the directory name `frontend-system-review`:
+### Option 3: git clone (one command per platform)
 
 ```bash
-# Example: Claude Code
-mkdir -p ~/.claude/skills
-cp -R frontend-system-review ~/.claude/skills/
+# Codex (official path ~/.agents/skills; community-common ~/.codex/skills)
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.agents/skills/frontend-system-review
+
+# Claude Code
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.claude/skills/frontend-system-review
+
+# OpenCode
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.config/opencode/skills/frontend-system-review
+
+# Cursor
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cursor/skills/frontend-system-review
+
+# Cline
+git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cline/skills/frontend-system-review
+
+# Project level (team sharing): run inside the project directory
+git clone https://github.com/linkingoscar/frontend-system-review.git .agents/skills/frontend-system-review
 ```
 
-### Option 3: Native commands
+> git clone installs the whole repo (including `.git`, `docs/`, and the install scripts). Skill loading only reads `SKILL.md` and its support files, so it does not affect usage; use Option 2 if you want the skill files only.
+
+### Option 4: Native commands
 
 ```bash
 # Gemini CLI
@@ -61,7 +82,7 @@ gemini skills install linkingoscar/frontend-system-review --scope user
 npx skills add linkingoscar/frontend-system-review -a "Codex" -g -y
 ```
 
-### Option 4: Symlink hub (install once, visible everywhere)
+### Option 5: Symlink hub (install once, visible everywhere)
 
 Use `~/.agents/skills` as the single real directory (natively read by Codex, Gemini, Cursor, Copilot, Zed, Windsurf, OpenCode) and symlink the rest:
 
@@ -207,14 +228,6 @@ rm -rf ~/.claude/skills/frontend-system-review
 # Windows
 Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\skills\frontend-system-review"
 ```
-
-## To Be Confirmed
-
-The following points follow official docs; community differences are flagged:
-
-1. Whether `~/.codex/skills/` is a currently valid Codex path — official docs list only `~/.agents/skills/`, but community installers still write to the former; the scripts keep both for compatibility.
-2. Whether the Codex AGENTS.md `@path`/`@agent` reference extension has been merged into a release (GitHub issues #6038 / #28739, status unverified).
-3. The exact version threshold for Cursor reading `.codex/skills/` compatibility directories is not documented.
 
 ## References
 

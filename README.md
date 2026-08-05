@@ -1,5 +1,20 @@
 # Frontend System Review
 
+[![Version](https://img.shields.io/github/v/release/linkingoscar/frontend-system-review?color=orange&label=Version)](https://github.com/linkingoscar/frontend-system-review/releases)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Standard-4CAF50)](https://agentskills.io/specification)
+[![OpenCode](https://img.shields.io/badge/OpenCode-Compatible-000000)](#)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-CC0000?logo=anthropic&logoColor=white)](#)
+[![Codex](https://img.shields.io/badge/Codex-Compatible-000000?logo=openai&logoColor=white)](#)
+[![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-Compatible-4285F4?logo=google&logoColor=white)](#)
+[![Cline](https://img.shields.io/badge/Cline-Compatible-4B32C3)](#)
+[![Cursor](https://img.shields.io/badge/Cursor-Compatible-000000)](#)
+[![Copilot](https://img.shields.io/badge/Copilot-Compatible-000000?logo=github&logoColor=white)](#)
+[![Windsurf](https://img.shields.io/badge/Windsurf-Compatible-00A3FF)](#)
+[![Zed](https://img.shields.io/badge/Zed-Compatible-000000)](#)
+[![Evidence-Driven](https://img.shields.io/badge/Evidence--Driven-Yes-1E88E5)](#)
+[![Bilingual](https://img.shields.io/badge/Bilingual-ZH%2FEN-00897B)](#)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-2EA44F)](https://linkingoscar.github.io/frontend-system-review/)
+
 > 证据驱动的前端系统评审 Skill —— 面向仓库、架构、PR 与运行中 Web 界面的系统级评审。
 
 覆盖业务匹配、技术栈与依赖、模块边界、类型与 API 契约、状态与数据流、渲染与性能、UI/UX 与设计系统、可访问性、测试、CI/CD、发布、安全与可观测性。以资深前端架构师、Web 质量工程师和产品设计审查者的视角工作,优先判断系统是否**正确、可访问、可维护、可度量并能安全发布**;不要把"采用热门技术"当作成熟度证明。

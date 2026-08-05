@@ -1,5 +1,20 @@
 # Frontend System Review
 
+[![Version](https://img.shields.io/github/v/release/linkingoscar/frontend-system-review?color=orange&label=Version)](https://github.com/linkingoscar/frontend-system-review/releases)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Standard-4CAF50)](https://agentskills.io/specification)
+[![OpenCode](https://img.shields.io/badge/OpenCode-Compatible-000000)](#)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-CC0000?logo=anthropic&logoColor=white)](#)
+[![Codex](https://img.shields.io/badge/Codex-Compatible-000000?logo=openai&logoColor=white)](#)
+[![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-Compatible-4285F4?logo=google&logoColor=white)](#)
+[![Cline](https://img.shields.io/badge/Cline-Compatible-4B32C3)](#)
+[![Cursor](https://img.shields.io/badge/Cursor-Compatible-000000)](#)
+[![Copilot](https://img.shields.io/badge/Copilot-Compatible-000000?logo=github&logoColor=white)](#)
+[![Windsurf](https://img.shields.io/badge/Windsurf-Compatible-00A3FF)](#)
+[![Zed](https://img.shields.io/badge/Zed-Compatible-000000)](#)
+[![Evidence-Driven](https://img.shields.io/badge/Evidence--Driven-Yes-1E88E5)](#)
+[![Bilingual](https://img.shields.io/badge/Bilingual-ZH%2FEN-00897B)](#)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-2EA44F)](https://linkingoscar.github.io/frontend-system-review/)
+
 > An evidence-driven frontend system review skill — systematic review of repositories, architectures, PRs, and running web interfaces.
 
 Covers business fit, tech stack & dependencies, module boundaries, type & API contracts, state & data flow, rendering & performance, UI/UX & design systems, accessibility, testing, CI/CD, release, security, and observability. It works from the perspective of a senior frontend architect, web quality engineer, and product design reviewer — prioritizing whether a system is **correct, accessible, maintainable, measurable, and safe to ship**; "using a trendy stack" is not treated as proof of maturity.

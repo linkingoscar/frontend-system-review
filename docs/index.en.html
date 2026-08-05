@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend System Review</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <meta name="description" content="An evidence-driven frontend system review skill — systematic review of repositories, architectures, PRs, and running web interfaces.">
+</head>
+<body>
+    <nav class="nav" id="nav">
+        <div class="nav__container">
+            <a href="#hero" class="nav__logo">Frontend System Review</a>
+            <button class="nav__toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+            </button>
+            <ul class="nav__menu" role="menubar">
+                <li role="none"><a href="#features" role="menuitem" class="nav__link">Features</a></li>
+                <li role="none"><a href="#modes" role="menuitem" class="nav__link">Review Modes</a></li>
+                <li role="none"><a href="#discipline" role="menuitem" class="nav__link">Core Disciplines</a></li>
+                <li role="none"><a href="#workflow" role="menuitem" class="nav__link">Workflow</a></li>
+                <li role="none"><a href="#scoring" role="menuitem" class="nav__link">Scoring & Verdicts</a></li>
+                <li role="none"><a href="#toolchain" role="menuitem" class="nav__link">Toolchain</a></li>
+                <li role="none"><a href="#quickstart" role="menuitem" class="nav__link">Quick Start</a></li>
+                <li role="none" class="nav__lang"><a href="index.html" role="menuitem" class="nav__link nav__lang-link">中文</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="hero__container">
+                <div class="hero__content">
+                    <h1 class="hero__title">Frontend System Review</h1>
+                    <p class="hero__subtitle">An evidence-driven frontend system review skill — systematic review of repositories, architectures, PRs, and running web interfaces. Covers business fit, tech stack, module boundaries, type contracts, state & data flow, rendering performance, UI/UX, accessibility, testing, CI/CD, security, and observability.</p>
+                </div>
+                <div class="hero__badge">
+                    <span class="badge">Evidence-driven</span>
+                    <span class="badge">System-level Review</span>
+                    <span class="badge">Reproducible Audits</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="features">
+            <div class="section__container">
+                <h2 class="section__title">Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-card__icon">📋</div>
+                        <h3 class="feature-card__title">Evidence-driven</h3>
+                        <p class="feature-card__desc">Every finding carries file:line, tool output, or runtime measurement; facts, inferences, and unknowns are strictly separated; never fabricated.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🔄</div>
+                        <h3 class="feature-card__title">Four Review Modes</h3>
+                        <p class="feature-card__desc">Repository system review / change review / runtime experience review / proposal review.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">📊</div>
+                        <h3 class="feature-card__title">Three Depths</h3>
+                        <p class="feature-card__desc">Quick scan / standard review / deep audit (standard is the default).</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🎯</div>
+                        <h3 class="feature-card__title">Strict Quality Gates</h3>
+                        <p class="feature-card__desc">P0/P1/P2 severity, severity-vs-confidence separation, scoring, evidence coverage, ship verdicts, with mechanical validation and CI gating.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🔧</div>
+                        <h3 class="feature-card__title">Deterministic Toolchain</h3>
+                        <p class="feature-card__desc">13 scripts: inventory, change scope, finding verification, scoring, rendering, baseline diff, gate, SARIF export, one-shot review bundle.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🔁</div>
+                        <h3 class="feature-card__title">Reproducible Auditing</h3>
+                        <p class="feature-card__desc">Playwright runtime evidence collection (screenshots, console, LCP/CLS, contrast, axe) + 32 eval tests.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="modes">
+            <div class="section__container">
+                <h2 class="section__title">Review Modes</h2>
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Mode</th>
+                                <th scope="col">Suitable Input</th>
+                                <th scope="col">Default Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Repository System Review</td>
+                                <td>Full project, directory, or stack</td>
+                                <td>Architecture & engineering quality report</td>
+                            </tr>
+                            <tr>
+                                <td>Change Review</td>
+                                <td>PR, diff, commits, or a few files</td>
+                                <td>Only issues introduced or amplified by the change</td>
+                            </tr>
+                            <tr>
+                                <td>Runtime Experience Review</td>
+                                <td>URL, local page, screenshot, or runnable app</td>
+                                <td>Responsive, interaction, a11y, performance & visual issues</td>
+                            </tr>
+                            <tr>
+                                <td>Proposal Review</td>
+                                <td>RFC, architecture diagram, selection notes</td>
+                                <td>Decision risks, alternatives, and a verification plan</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="discipline">
+            <div class="section__container">
+                <h2 class="section__title">Core Disciplines</h2>
+                <ol class="discipline-list">
+                    <li class="discipline-list__item">Inspect existing materials before asking questions. Don't make users repeat information obtainable from the repo or a running page.</li>
+                    <li class="discipline-list__item">Separate facts, inferences, and unknowns. Never write source-code inferences as runtime facts, and never fabricate files, line numbers, command results, screenshots, or metrics.</li>
+                    <li class="discipline-list__item">Every issue must include evidence, user/business impact, a concrete fix, and a verification method; unlocatable vague opinions do not enter the findings.</li>
+                    <li class="discipline-list__item">Separate severity from confidence. High-impact items lacking evidence are marked "to verify", not judged P0 outright.</li>
+                    <li class="discipline-list__item">Report conclusion-changing issues first, polish items later. Don't dilute risks with long lists of strengths.</li>
+                    <li class="discipline-list__item">Modify code only when the user asks. Review, diagnostic, and explanation requests are read-only by default.</li>
+                    <li class="discipline-list__item">Match business and team constraints. Don't default to recommending micro-frontends, monorepos, large design systems, or rewrites.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="workflow">
+            <div class="section__container">
+                <h2 class="section__title">Workflow</h2>
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">1</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Define Scope</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">2</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Build Project Profile</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">3</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Risk-first Scan</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">4</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Collect Verifiable Evidence</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">5</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Execute Relevant Dimensions</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">6</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Runtime Verification</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">7</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Parallel Investigation & Independent Verification</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">8</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Calibrate Findings</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">9</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Score & Ship Verdict</h3>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-step__number">10</div>
+                        <div class="workflow-step__content">
+                            <h3 class="workflow-step__title">Deliver</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="scoring">
+            <div class="section__container">
+                <h2 class="section__title">Scoring & Verdicts</h2>
+                <div class="scoring-grid">
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">Evidence Status</h3>
+                        <ul class="scoring-card__list">
+                            <li><span class="badge badge--success">Confirmed</span></li>
+                            <li><span class="badge badge--info">Highly likely</span></li>
+                            <li><span class="badge badge--warning">To verify</span></li>
+                            <li><span class="badge badge--neutral">N/A</span></li>
+                        </ul>
+                    </div>
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">Severity</h3>
+                        <ul class="scoring-card__list">
+                            <li><span class="badge badge--danger">P0 blocks release</span></li>
+                            <li><span class="badge badge--warning">P1 important</span></li>
+                            <li><span class="badge badge--info">P2 improvement</span></li>
+                        </ul>
+                    </div>
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">Scoring</h3>
+                        <p class="scoring-card__desc">12 dimensions scored 0–5, default weights sum to 100; grade A (85+) B (70+) C (55+) D; evidence coverage &lt;70% marked "provisional"</p>
+                    </div>
+                    <div class="scoring-card">
+                        <h3 class="scoring-card__title">Ship Verdict</h3>
+                        <ul class="scoring-card__list">
+                            <li>Blocks release</li>
+                            <li>Ready after fixes</li>
+                            <li>Ship with follow-ups</li>
+                            <li>Acceptable</li>
+                            <li>Unable to determine</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="scoring-note">Any confirmed P0 overrides the total score</p>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="toolchain">
+            <div class="section__container">
+                <h2 class="section__title">Toolchain</h2>
+                <div class="table-wrapper">
+                    <table class="table table--toolchain">
+                        <thead>
+                            <tr>
+                                <th scope="col">Script</th>
+                                <th scope="col">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>inventory_repo.py</code></td>
+                                <td>Deterministic repository inventory (framework/tooling/config/risk signals)</td>
+                            </tr>
+                            <tr>
+                                <td><code>collect_change_scope.py</code></td>
+                                <td>Collect changed files and line ranges for PR/commit/workspace, with risk categorization</td>
+                            </tr>
+                            <tr>
+                                <td><code>verify_findings.py</code></td>
+                                <td>Strict mechanical finding validation (structure, enums, source refs, quote matching, P0 evidence gate), --strict</td>
+                            </tr>
+                            <tr>
+                                <td><code>capture_command.py</code></td>
+                                <td>Run project commands and persist full redacted stdout/stderr, exit code, hashes, and environment metadata</td>
+                            </tr>
+                            <tr>
+                                <td><code>score_report.py</code></td>
+                                <td>Compute total score, grade, and evidence coverage with default 12-dimension weights</td>
+                            </tr>
+                            <tr>
+                                <td><code>render_report.py</code></td>
+                                <td>Deterministically render a JSON report into Chinese Markdown</td>
+                            </tr>
+                            <tr>
+                                <td><code>gate_report.py</code></td>
+                                <td>CI gate decision; default policy blocks block, ready_after_fixes, unable_to_determine verdicts and confirmed P0</td>
+                            </tr>
+                            <tr>
+                                <td><code>export_sarif.py</code></td>
+                                <td>Export GitHub Code Scanning-compatible SARIF 2.1.0 (confirmed findings with source locations by default)</td>
+                            </tr>
+                            <tr>
+                                <td><code>compare_reports.py</code></td>
+                                <td>Diff baseline vs current report by stable fingerprint: new / resolved / changed / regressed / unchanged</td>
+                            </tr>
+                            <tr>
+                                <td><code>build_review_bundle.py</code></td>
+                                <td>One-shot review bundle build (validated JSON, Markdown, SARIF, gate result, optional baseline diff, SHA-256 manifest)</td>
+                            </tr>
+                            <tr>
+                                <td><code>verify_review_bundle.py</code></td>
+                                <td>Verify bundle manifest hashes, evidence, and gate (tamper detection)</td>
+                            </tr>
+                            <tr>
+                                <td><code>review_common.py</code></td>
+                                <td>Shared constants (12-dimension weights, severity/confidence/verdict enums) and JSON utilities</td>
+                            </tr>
+                            <tr>
+                                <td><code>runtime_audit.cjs</code></td>
+                                <td>Playwright browser evidence collection (screenshots/DOM/console/network/LCP/CLS/contrast/optional axe); heuristic evidence, never auto-graded</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="references">
+            <div class="section__container">
+                <h2 class="section__title">References</h2>
+                <div class="references-grid">
+                    <div class="reference-item">
+                        <span class="reference-item__name">checklist.md</span>
+                        <span class="reference-item__desc">Engineering & architecture review checklist (12 sections)</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">web-quality.md</span>
+                        <span class="reference-item__desc">Web runtime quality (8 dimensions)</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">visual-design.md</span>
+                        <span class="reference-item__desc">Visual & design-system review guide</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">evidence-and-scoring.md</span>
+                        <span class="reference-item__desc">Evidence status, severity, scoring model</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">report-template.md</span>
+                        <span class="reference-item__desc">Report templates (3 formats)</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">tooling.md</span>
+                        <span class="reference-item__desc">Toolchain usage & output conventions</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-item__name">orchestration.md</span>
+                        <span class="reference-item__desc">Parallel investigation & independent verification</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--alt" id="testing">
+            <div class="section__container">
+                <h2 class="section__title">Tests</h2>
+                <p class="section__text">32 eval tests (<code>python -m unittest discover -s evals</code>), invoking scripts through subprocess, covering: repo inventory; evidence validation; P0 gate; scoring & coverage; Markdown rendering stability; command redaction & exit codes; runtime browser collection; baseline gating; SARIF export; bundle build and SHA-256 tamper detection.</p>
+            </div>
+        </section>
+
+        <section class="section" id="quickstart">
+            <div class="section__container">
+                <h2 class="section__title">Quick Start</h2>
+                <div class="quickstart-steps">
+                    <div class="quickstart-step">
+                        <div class="quickstart-step__number">1</div>
+                        <div class="quickstart-step__content">
+                            <p class="quickstart-step__text">Put this directory into your opencode skills directory, or reference the skill per-project.</p>
+                        </div>
+                    </div>
+                    <div class="quickstart-step">
+                        <div class="quickstart-step__number">2</div>
+                        <div class="quickstart-step__content">
+                            <p class="quickstart-step__text">Request a review: provide a repo path, PR link, live URL, or proposal document; the skill picks the mode and depth automatically.</p>
+                        </div>
+                    </div>
+                    <div class="quickstart-step">
+                        <div class="quickstart-step__number">3</div>
+                        <div class="quickstart-step__content">
+                            <p class="quickstart-step__text">Formal delivery: persist the report as JSON, then produce the validated review bundle with <code>build_review_bundle.py</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <p class="footer__text">
+                <a href="https://github.com/linkingoscar/frontend-system-review" class="footer__link" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+            </p>
+            <p class="footer__copyright">Frontend System Review Skill</p>
+        </div>
+    </footer>
+
+    <script src="assets/main.js"></script>
+</body>
+</html>

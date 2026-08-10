@@ -366,7 +366,7 @@
         <section class="section" id="install">
             <div class="section__container">
                 <h2 class="section__title">Cross-Platform Installation</h2>
-                <p class="section__text">Compatible with the Agent Skills open standard (agentskills.io) across Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more. Canonical sources for one orchestrator and six specialists live under skills/; see INSTALLATION.md.</p>
+                <p class="section__text">Compatible with the Agent Skills open standard (agentskills.io) across Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more. Use the skills CLI to install one orchestrator plus six specialists in one step while preserving a common update source; all seven canonical sources live under skills/. See <a href="https://github.com/linkingoscar/frontend-system-review/blob/main/INSTALLATION.en.md">INSTALLATION.en.md</a> for details.</p>
                 <div class="table-wrapper">
                     <table class="table">
                         <thead>
@@ -377,32 +377,36 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Universal (recommended)</td>
-                                <td>Copy to ~/.agents/skills/frontend-system-review/ (natively read by Codex, Gemini, Cursor, Copilot, Zed, Windsurf, OpenCode)</td>
+                                <td>skills CLI (recommended)</td>
+                                <td><code>npx skills add linkingoscar/frontend-system-review --skill '*' -g -y</code></td>
                             </tr>
                             <tr>
-                                <td>Codex</td>
-                                <td>Copy to ~/.agents/skills/ or ~/.codex/skills/, check with /skills in session</td>
+                                <td>Update the suite</td>
+                                <td><code>npx skills update -g -y</code></td>
                             </tr>
                             <tr>
-                                <td>Claude Code</td>
-                                <td>Copy to ~/.claude/skills/ or .claude/skills/, check with /skills in session</td>
+                                <td>Codex (manual fallback)</td>
+                                <td>Copy all seven skill directories under skills/ to ~/.agents/skills/ or ~/.codex/skills/, then check with /skills in session</td>
                             </tr>
                             <tr>
-                                <td>OpenCode</td>
-                                <td>Copy to ~/.config/opencode/skills/ or .opencode/skills/</td>
+                                <td>Claude Code (manual fallback)</td>
+                                <td>Copy all seven skill directories under skills/ to ~/.claude/skills/ or .claude/skills/, then check with /skills in session</td>
+                            </tr>
+                            <tr>
+                                <td>OpenCode (manual fallback)</td>
+                                <td>Copy all seven skill directories under skills/ to ~/.config/opencode/skills/ or .opencode/skills/</td>
                             </tr>
                             <tr>
                                 <td>Gemini CLI</td>
                                 <td>gemini skills install linkingoscar/frontend-system-review</td>
                             </tr>
                             <tr>
-                                <td>Cline</td>
-                                <td>Copy to ~/.cline/skills/ (enable Skills in settings first)</td>
+                                <td>Cline (manual fallback)</td>
+                                <td>Copy all seven skill directories under skills/ to ~/.cline/skills/ (enable Skills in settings first)</td>
                             </tr>
                             <tr>
                                 <td>One-click script</td>
-                                <td>./install.sh (Windows: install.ps1) defaults to the generic directory; pass --platform all to fan out</td>
+                                <td><code>./install.sh</code> (Windows: <code>install.ps1</code>) installs all seven skills by default; pass <code>--platform all</code> to fan out</td>
                             </tr>
                         </tbody>
                     </table>
@@ -417,7 +421,7 @@
                     <div class="quickstart-step">
                         <div class="quickstart-step__number">1</div>
                         <div class="quickstart-step__content">
-                            <p class="quickstart-step__text">Put this directory into your opencode skills directory, or reference the skill per-project.</p>
+                            <p class="quickstart-step__text">Run the skills CLI command above to install all seven skills; for the orchestrator only, replace <code>--skill '*'</code> with <code>--skill frontend-system-review</code>.</p>
                         </div>
                     </div>
                     <div class="quickstart-step">

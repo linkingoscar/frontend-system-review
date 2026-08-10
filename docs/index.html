@@ -366,7 +366,7 @@
         <section class="section" id="install">
             <div class="section__container">
                 <h2 class="section__title">跨平台安装</h2>
-                <p class="section__text">兼容 Agent Skills 开放标准（agentskills.io），支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台。1 个总控与 6 个专项的规范源均位于 skills/；安装指南见 INSTALLATION.md。</p>
+                <p class="section__text">兼容 Agent Skills 开放标准（agentskills.io），支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台。推荐通过 skills CLI 一次安装 1 个总控与 6 个专项，并保留统一更新来源；7 个规范源均位于 skills/。完整说明见 <a href="https://github.com/linkingoscar/frontend-system-review/blob/main/INSTALLATION.md">INSTALLATION.md</a>。</p>
                 <div class="table-wrapper">
                     <table class="table">
                         <thead>
@@ -377,32 +377,36 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>通用（推荐）</td>
-                                <td>复制到 ~/.agents/skills/frontend-system-review/（Codex、Gemini、Cursor、Copilot、Zed、Windsurf、OpenCode 原生读取）</td>
+                                <td>skills CLI（推荐）</td>
+                                <td><code>npx skills add linkingoscar/frontend-system-review --skill '*' -g -y</code></td>
                             </tr>
                             <tr>
-                                <td>Codex</td>
-                                <td>复制到 ~/.agents/skills/ 或 ~/.codex/skills/，会话内 /skills 查看</td>
+                                <td>更新整套</td>
+                                <td><code>npx skills update -g -y</code></td>
                             </tr>
                             <tr>
-                                <td>Claude Code</td>
-                                <td>复制到 ~/.claude/skills/ 或 .claude/skills/，会话内 /skills 查看</td>
+                                <td>Codex（手动备选）</td>
+                                <td>将 skills/ 下 7 个 skill 目录复制到 ~/.agents/skills/ 或 ~/.codex/skills/，会话内 /skills 查看</td>
                             </tr>
                             <tr>
-                                <td>OpenCode</td>
-                                <td>复制到 ~/.config/opencode/skills/ 或 .opencode/skills/</td>
+                                <td>Claude Code（手动备选）</td>
+                                <td>将 skills/ 下 7 个 skill 目录复制到 ~/.claude/skills/ 或 .claude/skills/，会话内 /skills 查看</td>
+                            </tr>
+                            <tr>
+                                <td>OpenCode（手动备选）</td>
+                                <td>将 skills/ 下 7 个 skill 目录复制到 ~/.config/opencode/skills/ 或 .opencode/skills/</td>
                             </tr>
                             <tr>
                                 <td>Gemini CLI</td>
                                 <td>gemini skills install linkingoscar/frontend-system-review</td>
                             </tr>
                             <tr>
-                                <td>Cline</td>
-                                <td>复制到 ~/.cline/skills/（需在设置中启用 Skills 实验功能）</td>
+                                <td>Cline（手动备选）</td>
+                                <td>将 skills/ 下 7 个 skill 目录复制到 ~/.cline/skills/（需在设置中启用 Skills 实验功能）</td>
                             </tr>
                             <tr>
                                 <td>一键脚本</td>
-                                <td>./install.sh（Windows: install.ps1）默认安装通用目录；传 --platform all 可铺开全部平台</td>
+                                <td><code>./install.sh</code>（Windows：<code>install.ps1</code>）默认安装整套 7 个 skill；传 <code>--platform all</code> 可铺开全部平台</td>
                             </tr>
                         </tbody>
                     </table>
@@ -417,7 +421,7 @@
                     <div class="quickstart-step">
                         <div class="quickstart-step__number">1</div>
                         <div class="quickstart-step__content">
-                            <p class="quickstart-step__text">将本 skill 放入你的 opencode skills 目录（或按项目配置引用）</p>
+                            <p class="quickstart-step__text">执行上方 skills CLI 命令安装整套 7 个 skill；只需要总控时，将 <code>--skill '*'</code> 替换为 <code>--skill frontend-system-review</code></p>
                         </div>
                     </div>
                     <div class="quickstart-step">

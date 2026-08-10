@@ -9,6 +9,7 @@ import sys
 import tempfile
 import threading
 import unittest
+import zipfile
 from pathlib import Path
 
 
@@ -192,7 +193,7 @@ class ToolingEval(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 audit = json.loads((Path(temporary) / "runtime-audit.json").read_text(encoding="utf-8"))
                 self.assertEqual(audit["schemaVersion"], "runtime-audit-2.0")
-                self.assertEqual(audit["tool"]["version"], "2.0.0")
+                self.assertEqual(audit["tool"]["version"], "2.0.1")
                 self.assertEqual(len(audit["results"]), 4)
                 self.assertEqual(len(audit["aggregates"]), 2)
                 self.assertEqual(audit["interactionSummary"]["scenarios"], 4)
@@ -417,7 +418,7 @@ class ToolingEval(unittest.TestCase):
             self.assertTrue(expected <= {item.name for item in output.iterdir()})
             manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
             self.assertTrue(manifest["summary"]["gate_passed"])
-            self.assertEqual(manifest["tool"]["version"], "2.0.0")
+            self.assertEqual(manifest["tool"]["version"], "2.0.1")
             self.assertEqual(
                 manifest["tool"]["engine_sha256"]["gate_report.py"],
                 hashlib.sha256((SCRIPTS / "gate_report.py").read_bytes()).hexdigest(),
@@ -735,6 +736,26 @@ class ToolingEval(unittest.TestCase):
             server.shutdown()
             server.server_close()
             thread.join(timeout=5)
+
+    def test_38_release_archive_normalizes_text_and_avoids_codec_variance(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "dist"
+            command = [sys.executable, str(REPO_TOOLS / "package_release.py"), "--output", str(output)]
+            first = subprocess.run(command, cwd=str(REPO_ROOT), text=True, encoding="utf-8", capture_output=True, check=False)
+            self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+            archive = output / "frontend-system-review-v2.0.1.zip"
+            first_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
+            second = subprocess.run(command, cwd=str(REPO_ROOT), text=True, encoding="utf-8", capture_output=True, check=False)
+            self.assertEqual(second.returncode, 0, second.stdout + second.stderr)
+            self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), first_hash)
+            with zipfile.ZipFile(archive) as bundle:
+                self.assertTrue(all(item.compress_type == zipfile.ZIP_STORED for item in bundle.infolist()))
+                self.assertTrue(all(item.create_system == 3 for item in bundle.infolist()))
+                metadata = bundle.read(
+                    "frontend-system-review-suite/frontend-system-review/agents/openai.yaml"
+                )
+                self.assertNotIn(b"\r\n", metadata)
+                self.assertIn("frontend-system-review-suite/LICENSE", bundle.namelist())
 
     def test_29_default_gate_matches_release_conclusion(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

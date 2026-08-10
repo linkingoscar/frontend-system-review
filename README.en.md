@@ -33,7 +33,7 @@ Covers business fit, tech stack & dependencies, module boundaries, type & API co
 - **Specialist orchestration** — one orchestrator plus six independently installable architecture, change, runtime, accessibility, visual, and release skills; broad reviews load only the minimum relevant set.
 - **Strict quality gates** — P0/P1/P2 severity, severity-vs-confidence separation, 12-dimension scoring, evidence coverage, ship-readiness verdicts, with mechanical validation and CI gating.
 - **Deterministic toolchain** — 14 scripts (Python stdlib / Node only): inventory, change scope, finding verification, scoring, rendering, baseline diff, gate, SARIF export, review bundles, and standards-freshness checks.
-- **Reproducible auditing** — declarative Playwright flows produce step-by-step state films, screenshot SHA/PNG diffs, console/network/LCP/CLS/contrast/axe evidence; 37 eval tests guard behavior.
+- **Reproducible auditing** — declarative Playwright flows produce step-by-step state films, screenshot SHA/PNG diffs, console/network/LCP/CLS/contrast/axe evidence; 38 eval tests guard behavior.
 - **Verifiable releases** — `VERSION` is the single version source; CI checks source/install/archive parity and enforces a 90-day WCAG/CWV/SARIF snapshot review window.
 
 ## Review Modes
@@ -116,7 +116,7 @@ Paths below are relative to the installed skill root. The canonical repository s
 python -m unittest discover -s evals
 ```
 
-37 tests invoke the scripts through subprocess, covering inventory, evidence validation, P0 gates, scoring, rendering, command capture, desktop/mobile browser collection, declarative interaction films, PNG diffs, interaction/performance gates, baselines, SARIF, bundles and tamper detection, plus multi-skill release layout, version, and standards-freshness consistency. Runtime-dependent tests run when `FRONTEND_REVIEW_NODE_MODULES` is set, otherwise they skip.
+38 tests invoke the scripts through subprocess, covering inventory, evidence validation, P0 gates, scoring, rendering, command capture, desktop/mobile browser collection, declarative interaction films, PNG diffs, interaction/performance gates, baselines, SARIF, bundles and tamper detection, plus multi-skill release layout, cross-platform deterministic packaging, version, and standards-freshness consistency. Runtime-dependent tests run when `FRONTEND_REVIEW_NODE_MODULES` is set, otherwise they skip.
 
 ## Cross-Platform Installation
 
@@ -169,7 +169,7 @@ frontend-system-review/
 ├── install.sh / install.ps1     # one-click install scripts (macOS/Linux / Windows)
 ├── tools/                       # release verification and deterministic packaging
 ├── release/manifest.json        # release boundary and version contract
-├── evals/                       # 37 unittest tests & fixtures
+├── evals/                       # 38 unittest tests & fixtures
 ├── .github/workflows/           # cross-platform CI and tagged releases
 └── docs/                        # GitHub Pages site
 ```

@@ -71,7 +71,7 @@ cd frontend-system-review
 ./install.sh --platform generic --skill all
 
 # Pin a reproducible release
-git checkout v2.0.0
+git checkout v2.0.1
 ./install.sh --platform generic --skill all --force
 ```
 

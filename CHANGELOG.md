@@ -2,6 +2,13 @@
 
 All notable changes are documented here. Versions follow Semantic Versioning.
 
+## [2.0.1] - 2026-08-10
+
+### Fixed
+
+- Normalize UTF-8 text payloads to LF and store ZIP entries without codec compression so release archives are byte-for-byte reproducible across Windows/Linux checkouts and Python/zlib environments.
+- Add `.gitattributes` and an archive regression test covering line-ending normalization, storage mode, repeated hashes, and bundled MIT license.
+
 ## [2.0.0] - 2026-08-10
 
 ### Added
@@ -25,5 +32,6 @@ Use `npx skills add linkingoscar/frontend-system-review --skill '*' -g -y`, or c
 
 - Initial public release of the evidence-driven frontend system review skill.
 
+[2.0.1]: https://github.com/linkingoscar/frontend-system-review/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/linkingoscar/frontend-system-review/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/linkingoscar/frontend-system-review/releases/tag/v1.0.0

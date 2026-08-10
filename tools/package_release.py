@@ -13,6 +13,21 @@ from pathlib import Path
 from verify_release import MANIFEST_PATH, REPO_ROOT, file_map, validate
 
 
+TEXT_EXTENSIONS = {".cjs", ".css", ".html", ".js", ".json", ".md", ".ps1", ".py", ".sh", ".txt", ".yaml", ".yml"}
+
+
+def canonical_payload(source: Path) -> bytes:
+    """Return cross-platform stable bytes for release archives."""
+    payload = source.read_bytes()
+    if source.name == "VERSION" or source.suffix.lower() in TEXT_EXTENSIONS or not source.suffix:
+        try:
+            text = payload.decode("utf-8")
+        except UnicodeDecodeError:
+            return payload
+        return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+    return payload
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -32,20 +47,22 @@ def main() -> int:
     if archive.exists():
         archive.unlink()
 
-    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as bundle:
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as bundle:
         license_source = REPO_ROOT / "LICENSE"
         license_info = zipfile.ZipInfo(f"{archive_root}/LICENSE", date_time=(1980, 1, 1, 0, 0, 0))
-        license_info.compress_type = zipfile.ZIP_DEFLATED
+        license_info.create_system = 3
+        license_info.compress_type = zipfile.ZIP_STORED
         license_info.external_attr = 0o644 << 16
-        bundle.writestr(license_info, license_source.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+        bundle.writestr(license_info, canonical_payload(license_source), compress_type=zipfile.ZIP_STORED)
         for spec in sorted(manifest["skills"], key=lambda item: item["name"]):
             skill = REPO_ROOT / spec["directory"]
             for relative in sorted(file_map(skill)):
                 source = skill / relative
                 info = zipfile.ZipInfo(f"{archive_root}/{spec['name']}/{relative}", date_time=(1980, 1, 1, 0, 0, 0))
-                info.compress_type = zipfile.ZIP_DEFLATED
+                info.create_system = 3
+                info.compress_type = zipfile.ZIP_STORED
                 info.external_attr = (0o755 if source.suffix in {".py", ".cjs"} else 0o644) << 16
-                bundle.writestr(info, source.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+                bundle.writestr(info, canonical_payload(source), compress_type=zipfile.ZIP_STORED)
 
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
     sums = output / "SHA256SUMS"

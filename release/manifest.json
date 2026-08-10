@@ -1,6 +1,6 @@
 {
   "schema_version": "frontend-system-review-release-2.0",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "primary_skill": "frontend-system-review",
   "version_file": "skills/frontend-system-review/VERSION",
   "standards_baseline": "skills/frontend-system-review/references/standards-baseline.json",

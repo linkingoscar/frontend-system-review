@@ -33,7 +33,7 @@
 - **专项编排** —— 1 个总控 + 架构、变更、运行时、可访问性、视觉、发布 6 个可独立安装的专项 skill；综合请求只加载需要的最小集合。
 - **严格质量门** —— P0/P1/P2 分级、严重度与置信度分离、12 维度评分、证据覆盖率、上线结论,支持机械校验与 CI 门禁。
 - **确定性工具链** —— 14 个仅依赖标准库/Python + Node 的脚本:盘点、变更范围、证据校验、评分、渲染、基线对比、门禁、SARIF 导出、一键评审包与标准时效校验。
-- **可重复审计** —— Playwright 声明式流程审计，生成逐步状态胶片、截图 SHA/PNG diff、console/网络/LCP/CLS/对比度/axe 证据；37 项 eval 测试保障工具行为。
+- **可重复审计** —— Playwright 声明式流程审计，生成逐步状态胶片、截图 SHA/PNG diff、console/网络/LCP/CLS/对比度/axe 证据；38 项 eval 测试保障工具行为。
 - **可验证发布** —— `VERSION` 是唯一版本源；CI 校验源码、安装副本和 Release ZIP 一致性，并按 90 天窗口检查 WCAG/CWV/SARIF 规则快照。
 
 ## 评审模式
@@ -116,7 +116,7 @@
 python -m unittest discover -s evals
 ```
 
-37 项测试通过 subprocess 真实调用脚本,覆盖:仓库盘点、证据校验、P0 门、评分与覆盖率、渲染、命令脱敏、桌面/移动浏览器采集、声明式交互胶片、PNG diff、交互/性能门禁、基线、SARIF、评审包与篡改检测，以及多 skill 发布边界、版本和标准时效一致性。运行时相关测试在设置 `FRONTEND_REVIEW_NODE_MODULES` 后执行,否则自动跳过。
+38 项测试通过 subprocess 真实调用脚本,覆盖:仓库盘点、证据校验、P0 门、评分与覆盖率、渲染、命令脱敏、桌面/移动浏览器采集、声明式交互胶片、PNG diff、交互/性能门禁、基线、SARIF、评审包与篡改检测，以及多 skill 发布边界、跨平台确定性打包、版本和标准时效一致性。运行时相关测试在设置 `FRONTEND_REVIEW_NODE_MODULES` 后执行,否则自动跳过。
 
 ## 跨平台安装
 
@@ -169,7 +169,7 @@ frontend-system-review/
 ├── install.sh / install.ps1     # 一键安装脚本(macOS/Linux / Windows)
 ├── tools/                       # 发布校验与确定性打包
 ├── release/manifest.json        # 发布边界和版本契约
-├── evals/                       # 37 项 unittest 测试与 fixtures
+├── evals/                       # 38 项 unittest 测试与 fixtures
 ├── .github/workflows/           # 跨平台 CI 与 tag Release
 └── docs/                        # GitHub Pages 站点
 ```

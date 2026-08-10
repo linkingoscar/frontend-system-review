@@ -1,6 +1,6 @@
 {
   "name": "frontend-system-review-development",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "Development-only dependencies for frontend-system-review browser integration tests.",
   "devDependencies": {

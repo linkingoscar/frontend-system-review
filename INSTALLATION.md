@@ -71,7 +71,7 @@ cd frontend-system-review
 ./install.sh --platform generic --skill all
 
 # 固定到可复现版本
-git checkout v2.0.0
+git checkout v2.0.1
 ./install.sh --platform generic --skill all --force
 ```
 

@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 1 * *"
+
+permissions:
+  contents: read
+
+jobs:
+  python-and-release:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Verify release layout
+        run: python tools/verify_release.py
+      - name: Check standards freshness
+        run: python skills/frontend-system-review/scripts/check_standards_freshness.py
+      - name: Run deterministic tooling evals
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONUTF8: "1"
+        run: python -m unittest evals.test_tooling -v
+      - name: Build deterministic release assets
+        run: python tools/package_release.py --output dist
+
+  browser-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run real-browser evals
+        env:
+          FRONTEND_REVIEW_NODE: node
+          FRONTEND_REVIEW_NODE_MODULES: ${{ github.workspace }}/node_modules
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONUTF8: "1"
+        run: python -m unittest evals.test_tooling -v
+
+  installers:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install on Unix
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          ./install.sh --platform generic --scope project --project-dir "$RUNNER_TEMP/fsr-install" --force
+          python tools/verify_release.py --installed-root "$RUNNER_TEMP/fsr-install/.agents/skills"
+      - name: Install on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./install.ps1 -Platform generic -Scope project -ProjectDir "$env:RUNNER_TEMP/fsr-install" -Force
+          python tools/verify_release.py --installed-root "$env:RUNNER_TEMP/fsr-install/.agents/skills"

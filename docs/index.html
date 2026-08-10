@@ -66,18 +66,23 @@
                     </div>
                     <div class="feature-card">
                         <div class="feature-card__icon">🎯</div>
+                        <h3 class="feature-card__title">1 + 6 专项编排</h3>
+                        <p class="feature-card__desc">总控统一证据与结论，架构、变更、运行时、a11y、视觉、发布 skill 可独立触发</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🎯</div>
                         <h3 class="feature-card__title">严格质量门</h3>
                         <p class="feature-card__desc">P0/P1/P2 分级、置信度分离、评分、证据覆盖率、上线结论，机械校验与 CI 门禁</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card__icon">🔧</div>
                         <h3 class="feature-card__title">确定性工具链</h3>
-                        <p class="feature-card__desc">13 个标准库脚本：盘点、变更范围、校验、评分、渲染、基线对比、门禁、SARIF、评审包</p>
+                        <p class="feature-card__desc">14 个确定性脚本：盘点、变更范围、校验、评分、渲染、基线对比、门禁、SARIF、评审包、规则时效检查</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card__icon">🔁</div>
                         <h3 class="feature-card__title">可重复审计</h3>
-                        <p class="feature-card__desc">浏览器运行时证据采集（截图、console、LCP/CLS、对比度、axe）+ 32 项 eval 测试</p>
+                        <p class="feature-card__desc">声明式交互胶片、截图 SHA/PNG diff、console/网络/CWV/axe + 37 项 eval 测试</p>
                     </div>
                 </div>
             </div>
@@ -354,14 +359,14 @@
         <section class="section section--alt" id="testing">
             <div class="section__container">
                 <h2 class="section__title">测试</h2>
-                <p class="section__text">32 项 eval 测试（<code>python -m unittest discover -s evals</code>），通过 subprocess 真实调用脚本，覆盖盘点、证据校验、P0 门、评分、渲染、命令脱敏、运行时浏览器采集、基线门禁、SARIF、评审包与篡改检测。</p>
+                <p class="section__text">37 项 eval 测试（<code>python -m unittest discover -s evals</code>），覆盖盘点、证据校验、P0 门、评分、命令脱敏、声明式交互胶片、PNG diff、运行时门禁、SARIF、评审包、多 skill 发布边界、版本与规则时效。</p>
             </div>
         </section>
 
         <section class="section" id="install">
             <div class="section__container">
                 <h2 class="section__title">跨平台安装</h2>
-                <p class="section__text">兼容 Agent Skills 开放标准（agentskills.io），支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台。完整安装指南见 INSTALLATION.md。最简单：把仓库链接粘贴给你的 AI，直接按 SKILL.md 使用。</p>
+                <p class="section__text">兼容 Agent Skills 开放标准（agentskills.io），支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台。1 个总控与 6 个专项的规范源均位于 skills/；安装指南见 INSTALLATION.md。</p>
                 <div class="table-wrapper">
                     <table class="table">
                         <thead>
@@ -397,7 +402,7 @@
                             </tr>
                             <tr>
                                 <td>一键脚本</td>
-                                <td>./install.sh（Windows: install.ps1）自动安装到全部平台</td>
+                                <td>./install.sh（Windows: install.ps1）默认安装通用目录；传 --platform all 可铺开全部平台</td>
                             </tr>
                         </tbody>
                     </table>

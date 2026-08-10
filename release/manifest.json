@@ -1,0 +1,46 @@
+{
+  "schema_version": "frontend-system-review-release-2.0",
+  "version": "2.0.0",
+  "primary_skill": "frontend-system-review",
+  "version_file": "skills/frontend-system-review/VERSION",
+  "standards_baseline": "skills/frontend-system-review/references/standards-baseline.json",
+  "skills": [
+    {
+      "name": "frontend-system-review",
+      "directory": "skills/frontend-system-review",
+      "allowed_entries": ["SKILL.md", "VERSION", "agents", "references", "scripts"]
+    },
+    {
+      "name": "frontend-architecture-review",
+      "directory": "skills/frontend-architecture-review",
+      "allowed_entries": ["SKILL.md", "agents"]
+    },
+    {
+      "name": "frontend-change-review",
+      "directory": "skills/frontend-change-review",
+      "allowed_entries": ["SKILL.md", "agents"]
+    },
+    {
+      "name": "web-runtime-review",
+      "directory": "skills/web-runtime-review",
+      "allowed_entries": ["SKILL.md", "agents"]
+    },
+    {
+      "name": "accessibility-review",
+      "directory": "skills/accessibility-review",
+      "allowed_entries": ["SKILL.md", "agents"]
+    },
+    {
+      "name": "visual-design-review",
+      "directory": "skills/visual-design-review",
+      "allowed_entries": ["SKILL.md", "agents"]
+    },
+    {
+      "name": "frontend-release-review",
+      "directory": "skills/frontend-release-review",
+      "allowed_entries": ["SKILL.md", "agents"]
+    }
+  ],
+  "release_asset_prefix": "frontend-system-review",
+  "archive_root": "frontend-system-review-suite"
+}

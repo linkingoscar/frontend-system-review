@@ -1,6 +1,7 @@
 ---
 name: frontend-system-review
-description: 对前端仓库、架构方案、PR/代码变更或运行中的 Web 界面执行证据驱动的系统评审，覆盖业务匹配、技术栈与依赖、模块边界、类型与 API 契约、状态与数据流、渲染和性能、UI/设计系统、可访问性、测试、CI/CD、发布、安全与可观测性。用于“前端架构评审”“项目体检/诊断”“代码或 PR review”“UI/UX/设计审查”“性能或无障碍审计”“老项目治理”“Monorepo/微前端/组件库/技术选型评估”等请求；支持快速扫描、标准评审、深度审计、独立验证与上线门禁，输出带 file:line 或运行时证据、稳定指纹、置信度、P0/P1/P2、修复与验证步骤的报告，并可生成机械校验的 JSON/Markdown、基线差异、CI 门禁、SARIF、评分和可重复浏览器审计证据。
+description: 编排需要跨架构、代码变更、运行时体验、可访问性、视觉设计和发布治理的证据驱动前端系统评审，并统一范围、证据、P0/P1/P2、评分、上线结论和机器报告。用于“全面评审/项目体检/深度审计/上线验收/多维度前端 review”等综合请求，或需要把多个专项结论合并、去重、反证和门禁时；若请求明确只涉及架构、PR/diff、Web 运行时、a11y、视觉或发布，应优先使用对应的 frontend-architecture-review、frontend-change-review、web-runtime-review、accessibility-review、visual-design-review 或 frontend-release-review 专项 skill。
+license: MIT
 ---
 
 # Frontend System Review
@@ -36,6 +37,23 @@ description: 对前端仓库、架构方案、PR/代码变更或运行中的 Web
 
 如果范围不清，先采用最小合理范围并明确说明；只有不同选择会显著改变结果时才询问用户。
 
+## 编排专项 skill
+
+先按问题类型路由，不要让总控重复吞下所有专项细节：
+
+| 任务 | 首选专项 skill | 总控职责 |
+|---|---|---|
+| 架构、依赖、边界、数据流、组件平台 | `frontend-architecture-review` | 校准业务约束与跨维风险 |
+| PR、diff、提交、回归与影响面 | `frontend-change-review` | 合并基线与上线结论 |
+| 路由、流程、交互、性能、SEO、响应式 | `web-runtime-review` | 统一运行时证据和源码发现 |
+| WCAG、键盘、焦点、语义、读屏与表单 | `accessibility-review` | 将阻断型 a11y 纳入总门禁 |
+| 品牌、层级、设计系统、视觉回归 | `visual-design-review` | 区分品味建议与任务损害 |
+| CI/CD、制品、回滚、可观测性、供应链 | `frontend-release-review` | 形成最终发布判定 |
+
+专项 skill 可独立执行。综合评审时优先加载需要的最小集合，向每个专项传递同一份范围、业务约束和证据格式；不要为了“覆盖全面”启动不适用专项。若专项 skill 不可用，才使用本 skill 的对应参考资料降级执行。
+
+专项返回候选 findings 后，总控负责：按稳定 fingerprint 去重；处理相互矛盾的严重度；要求候选 P0/P1 独立复现；区分同一根因与多个用户影响；只输出一份统一的评分、覆盖率和上线结论。专项不能各自宣布最终上线结论。
+
 ## 按需读取参考资料
 
 不要一次加载所有参考文件。
@@ -46,6 +64,7 @@ description: 对前端仓库、架构方案、PR/代码变更或运行中的 Web
 - 需要分级、评分、证据覆盖率或上线结论时，读取 [references/evidence-and-scoring.md](references/evidence-and-scoring.md)。
 - 需要正式报告时，读取 [references/report-template.md](references/report-template.md)；小范围 review 可用紧凑 findings 格式。
 - 需要仓库自动盘点、JSON 报告、证据校验、确定性评分、Markdown 渲染或批量浏览器证据时，读取 [references/tooling.md](references/tooling.md)。
+- 使用 WCAG、Core Web Vitals、SARIF 或运行环境门槛形成正式结论前，读取 [references/standards-baseline.json](references/standards-baseline.json)，并运行 `scripts/check_standards_freshness.py`；快照过期时停止把阈值表述为当前标准，先核对权威来源并更新快照。
 - 深度审计需要并行专项检查或候选 P0/P1 的独立反证时，读取 [references/orchestration.md](references/orchestration.md)。
 
 ## 执行工作流
@@ -139,7 +158,7 @@ ID | 维度 | 严重度 | 置信度 | 证据 | 影响 | 修复 | 验证
 - 需要时运行 Lighthouse、axe 或项目已有检查，但说明工具版本、环境和局限；
 - 保存或引用截图时标明路由、视口、状态和时间点；任何“点击/输入前后发生变化”的结论都必须引用操作前、操作后两份可区分的截图、DOM/ARIA snapshot 或 trace，单一终态 artifact 不足以确认状态转换；
 
-需要重复检查多个路由或视口时，使用 `scripts/runtime_audit.cjs` 收集截图、console/page error、失败请求、DOM 结构、表单控件与交互元素计数、布局溢出、带计算溯源的文本对比度样本、LCP/CLS/长任务实验室信号和可选 axe 结果。深度性能审计用 `--runs 3` 或更多合理次数报告中位数；只有项目明确给出预算时才启用 `--fail-on-budget`。该脚本只生成启发式证据，不自动判定严重度；对比度样本必须在同一状态截图中复核，axe `not_run` 代表未覆盖而不是通过，INP 需要交互，field 结论需要 RUM。临时交互调试仍优先使用 Playwright CLI 的 snapshot → interaction → snapshot 流程。
+需要重复检查多个路由、视口或流程时，使用 `scripts/runtime_audit.cjs`。按 `scripts/runtime-manifest.schema.json` 把登录/会话过期、菜单/弹窗、表单错误、容量边界、A→B→A、失败/重试/撤销/恢复固化为声明式 `scenarios[].steps[]`；敏感输入使用 `valueEnv`，禁止嵌入任意脚本。工具为每一步生成前后状态、截图 SHA、语义差异、状态胶片和可选 PNG diff，同时收集 console/page error、网络、DOM、布局、对比度、LCP/CLS/长任务与可选 axe。深度性能审计用 `--runs 3` 或更多合理次数报告中位数；只有项目明确给出预算时才启用 `--fail-on-budget`。交互与视觉 diff 只生成候选证据，不自动判定严重度；axe `not_run` 代表未覆盖，INP 需要真实交互，field 结论需要 RUM。临时探索仍使用 Playwright CLI 的 snapshot → interaction → snapshot 流程。
 
 如果无法运行，明确列出“静态可确认”“需要运行时验证”和“本次未覆盖”。自动工具不能替代键盘、读屏和人工体验检查。
 

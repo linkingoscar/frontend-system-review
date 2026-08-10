@@ -14,13 +14,27 @@
 Paste the repo link into the AI tool you are using and let it install or work directly:
 
 - In a coding agent session that supports skills (Codex, Claude Code, OpenCode, etc.), simply say: **"install the skill at https://github.com/linkingoscar/frontend-system-review"** — the AI clones it into the right directory for your platform.
-- Or paste the contents of [SKILL.md](./SKILL.md) into the conversation — the AI follows its review disciplines and workflow directly. Works with any conversational AI (ChatGPT, Claude, Gemini, etc.), no local install needed.
+- Or paste the contents of [SKILL.md](./skills/frontend-system-review/SKILL.md) into the conversation — the AI follows its review disciplines and workflow directly. Works with any conversational AI (ChatGPT, Claude, Gemini, etc.), no local install needed.
 
-### Option 2: One-click install scripts (recommended)
+### Option 2: skills CLI (recommended)
+
+The [skills CLI](https://www.skills.sh/docs/cli) preserves a common source record and update flow:
+
+```bash
+npx skills add linkingoscar/frontend-system-review --skill '*' -g -y
+npx skills list -g
+npx skills update -g -y
+```
+
+Omit `-g` for project scope. For the orchestrator only, replace `--skill '*'` with `--skill frontend-system-review`. The CLI discovers one orchestrator and six specialist skills from the canonical repository directory.
+
+### Option 3: Repository installers
 
 ```bash
 # macOS / Linux
-./install.sh                          # install to all platforms (user scope)
+./install.sh                          # install all 7 skills to ~/.agents/skills by default
+./install.sh --platform all           # explicitly install to all platform directories
+./install.sh --skill frontend-system-review   # orchestrator only
 ./install.sh --platform claude,opencode   # only specific platforms
 ./install.sh --dry-run                # preview what would be done
 ./install.sh --scope project --project-dir /path/to/project   # project scope
@@ -38,7 +52,8 @@ Script arguments:
 
 | Argument | Description |
 |---|---|
-| `--platform <list>` / `-Platform` | Comma-separated platforms: `generic,codex,claude,opencode,gemini,cline,cursor,copilot` (default: all) |
+| `--platform <list>` / `-Platform` | Comma-separated platforms: `generic,codex,claude,opencode,gemini,cline,cursor,copilot,all` (default: `generic`) |
+| `--skill <list>` / `-Skill` | Comma-separated skill names or `all` (default: the complete suite) |
 | `--scope user\|project` / `-Scope` | `user`: current user's directories (default); `project`: project directories |
 | `--project-dir <dir>` / `-ProjectDir` | Project directory for `--scope project` (default: current dir) |
 | `--dry-run` / `-DryRun` | Show what would be done without copying |
@@ -46,43 +61,33 @@ Script arguments:
 | `--link` (install.sh only) | Symlink instead of copy (default: copy) |
 | `--help` / `-Help` | Show help |
 
-> Windows version copies by default (symlinks need admin rights); Unix version copies by default, `--link` optional. Copy excludes `.git` and the install scripts themselves.
+> Both installers copy only canonical skills below `skills/` and verify each copy afterward; release verification ensures that set matches the manifest. Unix can use `--link` for live synchronization.
 
-### Option 3: git clone (one command per platform)
+### Option 4: Clone, then install
 
 ```bash
-# Codex (official path ~/.agents/skills; community-common ~/.codex/skills)
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.agents/skills/frontend-system-review
+git clone https://github.com/linkingoscar/frontend-system-review.git
+cd frontend-system-review
+./install.sh --platform generic --skill all
 
-# Claude Code
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.claude/skills/frontend-system-review
-
-# OpenCode
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.config/opencode/skills/frontend-system-review
-
-# Cursor
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cursor/skills/frontend-system-review
-
-# Cline
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cline/skills/frontend-system-review
-
-# Project level (team sharing): run inside the project directory
-git clone https://github.com/linkingoscar/frontend-system-review.git .agents/skills/frontend-system-review
+# Pin a reproducible release
+git checkout v2.0.0
+./install.sh --platform generic --skill all --force
 ```
 
-> git clone installs the whole repo (including `.git`, `docs/`, and the install scripts). Skill loading only reads `SKILL.md` and its support files, so it does not affect usage; use Option 2 if you want the skill files only.
+> Do not clone the repository root directly into a skill directory. The root is the release/documentation project; installable content lives only in `skills/frontend-system-review/`.
 
-### Option 4: Native commands
+### Option 5: Native commands
 
 ```bash
 # Gemini CLI
 gemini skills install linkingoscar/frontend-system-review --scope user
 
-# Community tool npx skills (per-agent distribution)
-npx skills add linkingoscar/frontend-system-review -a "Codex" -g -y
+# skills CLI also supports per-agent distribution
+npx skills add linkingoscar/frontend-system-review --skill '*' -a codex -g -y
 ```
 
-### Option 5: Symlink hub (install once, visible everywhere)
+### Option 6: Symlink hub (install once, visible everywhere)
 
 Use `~/.agents/skills` as the single real directory (natively read by Codex, Gemini, Cursor, Copilot, Zed, Windsurf, OpenCode) and symlink the rest:
 

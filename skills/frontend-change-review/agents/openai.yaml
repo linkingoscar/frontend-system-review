@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端变更评审"
+  short_description: "只审查 PR/diff 新增或放大的前端风险"
+  default_prompt: "使用 $frontend-change-review 评审这次前端变更，并只报告增量问题。"

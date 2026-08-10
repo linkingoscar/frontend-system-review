@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端发布评审"
+  short_description: "评审 CI、制品、部署、回滚、供应链与可观测性"
+  default_prompt: "使用 $frontend-release-review 对这个前端发布体系做上线专项评审。"

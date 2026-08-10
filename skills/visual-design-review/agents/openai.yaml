@@ -1,0 +1,4 @@
+interface:
+  display_name: "视觉设计评审"
+  short_description: "审查视觉层级、设计系统、响应式构图与截图差异"
+  default_prompt: "使用 $visual-design-review 对这个界面做证据驱动的视觉设计专项评审。"

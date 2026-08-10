@@ -86,7 +86,7 @@
 
 ## 5. 性能与 Core Web Vitals
 
-优先真实用户数据，其次可复现的实验室测量，最后才是源码推断。精确门槛可能演进；用于门禁前核对当前官方定义和项目 SLO。
+优先真实用户数据，其次可复现的实验室测量，最后才是源码推断。正式交付使用 [standards-baseline.json](standards-baseline.json) 中带复核日期的版本化快照，并运行 `../scripts/check_standards_freshness.py`；快照过期时先核对其中的权威来源，再更新阈值和复核窗口。项目 SLO 优先于通用良好体验阈值，但两者必须明确区分。
 
 常用良好体验参考：LCP 约不高于 2.5s、INP 约不高于 200ms、CLS 约不高于 0.1，通常按第 75 百分位判断。不要把单次本机 Lighthouse 分数当作真实用户结论。
 

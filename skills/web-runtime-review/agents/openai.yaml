@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web 运行时评审"
+  short_description: "用任务矩阵、交互胶片和差异证据审计 Web 体验"
+  default_prompt: "使用 $web-runtime-review 对这个 Web 应用执行可重复的运行时专项评审。"

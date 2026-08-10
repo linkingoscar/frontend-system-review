@@ -13,8 +13,9 @@
 7. 基线、门禁与 SARIF
 8. 一键构建评审包
 9. 运行时浏览器证据
-10. Eval 套件
-11. 退出码与失败处理
+10. 规则快照与版本
+11. Eval 套件
+12. 退出码与失败处理
 
 ## 1. 输出目录与运行环境
 
@@ -198,6 +199,16 @@ manifest 证明所列文件自生成后未变化，不等同于作者身份签�
       "viewports": [
         { "name": "desktop", "width": 1440, "height": 900 },
         { "name": "mobile", "width": 375, "height": 812, "isMobile": true, "hasTouch": true }
+      ],
+      "scenarios": [
+        {
+          "id": "validation-and-recovery",
+          "steps": [
+            { "id": "submit-empty", "action": "click", "target": { "role": "button", "name": "Pay" }, "waitFor": { "target": { "role": "alert" } } },
+            { "id": "enter-email", "action": "fill", "target": { "label": "Email" }, "valueEnv": "FSR_TEST_EMAIL" },
+            { "id": "retry", "action": "click", "target": { "role": "button", "name": "Retry" } }
+          ]
+        }
       ]
     }
   ]
@@ -224,6 +235,7 @@ node <skill>/scripts/runtime_audit.cjs \
   --runs 3 \
   --full-page \
   --fail-on-navigation-error \
+  --fail-on-interaction-error \
   --fail-on-budget
 ```
 
@@ -236,26 +248,43 @@ node <skill>/scripts/runtime_audit.cjs \
 - `--headed`：需要人工视觉确认时显示浏览器。
 - `--runs 3`：重复采样并为每个路由/视口生成中位数；默认 1，最多 10。
 - `--fail-on-budget`：仅对 manifest 中由项目明确提供的预算门禁。
+- `--fail-on-interaction-error`：声明式步骤无法定位、操作或等待目标状态时阻止该工具步骤。
 
-输出 `runtime-audit.json`、截图和可选 trace。它收集 DOM、布局、console、page error、失败请求、HTTP 错误、LCP/CLS/长任务实验室信号、资源分组、可选 axe 结果，以及带原始计算样本、公式、阈值和限制说明的文本对比度启发式证据。`controls.formControlTotal` 只计 `input/select/textarea`，`interactiveElementTotal` 计链接、按钮、表单控件和显式交互角色，`focusableCount` 才表示当前可聚焦元素；不要混写三者。axe 状态为 `not_run` 时表示该证据面未覆盖，不能解释为通过。
+manifest 契约见 `scripts/runtime-manifest.schema.json`。动作只允许 `click/fill/press/select/check/uncheck/hover/wait-for/goto/reload/wait`；定位优先 role、label、test id、placeholder 或可见文本。密码、token 和测试账号使用 `valueEnv` 引用环境变量，工具输出不会回显输入值。不要在 manifest 中嵌入任意脚本。
+
+输出 `runtime-audit.json`、每个场景的 `state-film.json`、逐步截图/差异图和可选 trace。每一步记录前后 URL、焦点、文本/结构摘要哈希、dialog/alert、页面尺寸、截图 SHA-256 与机器可读 state diff；安装 `pngjs` 时生成洋红标记的 PNG diff 和变化比例，否则保留截图哈希与语义差异降级证据。动态时间、动画、随机数据和第三方内容可能制造视觉噪声，diff 不能自动升级为 finding。
+
+基础快照还收集 DOM、布局、console、page error、失败请求、HTTP 错误、LCP/CLS/长任务实验室信号、资源分组、可选 axe 结果，以及带原始计算样本、公式、阈值和限制说明的文本对比度启发式证据。`controls.formControlTotal` 只计 `input/select/textarea`，`interactiveElementTotal` 计链接、按钮、表单控件和显式交互角色，`focusableCount` 才表示当前可聚焦元素；不要混写三者。axe 状态为 `not_run` 时表示该证据面未覆盖，不能解释为通过。
 
 对比度采集只对可解析的纯色祖先背景做 sRGB 相对亮度和 alpha 合成，跳过图片、渐变、滤镜、混合模式和伪元素；每个候选都必须用同一路由、视口和状态的截图复核后才能升级为 finding。该工具不自动创建 findings。INP 需要真实交互，field 结论需要 RUM；不要把该快照写成真实用户 Core Web Vitals。
 
-状态转换（例如菜单展开、表单报错或对话框开关）使用 Playwright 的 `snapshot → interaction → snapshot`，分别保存前后 artifact，并在 evidence 中引用两者。只有终态截图或单份 ARIA snapshot 时，只能确认终态，不能声称已经观察到转换过程。
+状态转换（例如登录与会话过期、菜单、表单错误、0/1/1000 条数据、A→B→A、失败/重试/撤销/恢复）优先固化为 `scenarios[].steps[]`。临时探索仍使用 Playwright 的 `snapshot → interaction → snapshot`。只有终态截图或单份 ARIA snapshot 时，只能确认终态，不能声称已经观察到转换过程。
 
-## 10. Eval 套件
+## 10. 规则快照与版本
+
+`<skill>/VERSION` 是工具输出、发布清单和标准快照的唯一版本源。不要在脚本中硬编码另一套版本号。
+
+`references/standards-baseline.json` 固化本版本采用的 WCAG、Core Web Vitals、SARIF 与运行环境基线，同时记录权威来源、复核日期和最迟复核日。正式或深度交付前运行：
+
+```text
+python <skill>/scripts/check_standards_freshness.py
+```
+
+退出码为 `1` 表示快照已过期或契约不一致。此时不得继续把快照阈值称为“当前标准”；先核对权威来源，更新快照及相关测试，再重新发布。临近最迟复核日时脚本会给出 warning，CI 每月定时运行该检查。
+
+## 11. Eval 套件
 
 开发或修改本 skill 后运行：
 
 ```text
-python -m unittest discover -s <skill>/evals -v
+python -m unittest discover -s <repo>/evals -v
 ```
 
 设置 `FRONTEND_REVIEW_NODE_MODULES` 后，浏览器集成 eval 会实际启动本地站点、访问桌面与移动视口并验证截图和 JSON；未设置时该项会明确 skip。
 
-Eval 覆盖仓库识别、引用匹配、越界行号、路径逃逸、P0 证据门、finding 指纹、跨文件语义警告、完整命令证据、基线差异、增量门禁、SARIF、评审包哈希与篡改检测、变更范围、评分、渲染、运行时 dry-run 和真实浏览器采集。
+37 项 Eval 覆盖仓库识别、引用匹配、越界行号、路径逃逸、P0 证据门、finding 指纹、跨文件语义警告、完整命令证据、基线差异、增量门禁、SARIF、评审包哈希与篡改检测、变更范围、评分、渲染、运行时 dry-run、声明式交互胶片、视觉 diff、交互失败门禁、真实浏览器采集、版本一致性、发布边界与规则时效。
 
-## 11. 退出码与失败处理
+## 12. 退出码与失败处理
 
 - `0`：命令完成且相应校验通过。
 - `1`：报告、评分或运行时检查发现应阻止该工具步骤完成的问题。

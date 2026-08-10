@@ -66,18 +66,23 @@
                     </div>
                     <div class="feature-card">
                         <div class="feature-card__icon">🎯</div>
+                        <h3 class="feature-card__title">1 + 6 Specialists</h3>
+                        <p class="feature-card__desc">One orchestrator unifies evidence and verdicts; architecture, change, runtime, a11y, visual, and release skills trigger independently.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">🎯</div>
                         <h3 class="feature-card__title">Strict Quality Gates</h3>
                         <p class="feature-card__desc">P0/P1/P2 severity, severity-vs-confidence separation, scoring, evidence coverage, ship verdicts, with mechanical validation and CI gating.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card__icon">🔧</div>
                         <h3 class="feature-card__title">Deterministic Toolchain</h3>
-                        <p class="feature-card__desc">13 scripts: inventory, change scope, finding verification, scoring, rendering, baseline diff, gate, SARIF export, one-shot review bundle.</p>
+                        <p class="feature-card__desc">14 deterministic scripts: inventory, change scope, verification, scoring, rendering, baseline diff, gate, SARIF, bundles, and standards freshness.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-card__icon">🔁</div>
                         <h3 class="feature-card__title">Reproducible Auditing</h3>
-                        <p class="feature-card__desc">Playwright runtime evidence collection (screenshots, console, LCP/CLS, contrast, axe) + 32 eval tests.</p>
+                        <p class="feature-card__desc">Declarative interaction films, screenshot SHA/PNG diffs, console/network/CWV/axe evidence + 37 eval tests.</p>
                     </div>
                 </div>
             </div>
@@ -354,14 +359,14 @@
         <section class="section section--alt" id="testing">
             <div class="section__container">
                 <h2 class="section__title">Tests</h2>
-                <p class="section__text">32 eval tests (<code>python -m unittest discover -s evals</code>), invoking scripts through subprocess, covering: repo inventory; evidence validation; P0 gate; scoring & coverage; Markdown rendering stability; command redaction & exit codes; runtime browser collection; baseline gating; SARIF export; bundle build and SHA-256 tamper detection.</p>
+                <p class="section__text">37 eval tests (<code>python -m unittest discover -s evals</code>) cover inventory, evidence validation, P0 gates, scoring, command capture, declarative interaction films, PNG diffs, runtime gates, SARIF, bundles, multi-skill release layout, versions, and standards freshness.</p>
             </div>
         </section>
 
         <section class="section" id="install">
             <div class="section__container">
                 <h2 class="section__title">Cross-Platform Installation</h2>
-                <p class="section__text">Compatible with the Agent Skills open standard (agentskills.io). Works with Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more. Full guide: INSTALLATION.md. Easiest: paste the repo link to your AI and use it via SKILL.md directly.</p>
+                <p class="section__text">Compatible with the Agent Skills open standard (agentskills.io) across Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more. Canonical sources for one orchestrator and six specialists live under skills/; see INSTALLATION.md.</p>
                 <div class="table-wrapper">
                     <table class="table">
                         <thead>
@@ -397,7 +402,7 @@
                             </tr>
                             <tr>
                                 <td>One-click script</td>
-                                <td>./install.sh (Windows: install.ps1) installs to all platforms</td>
+                                <td>./install.sh (Windows: install.ps1) defaults to the generic directory; pass --platform all to fan out</td>
                             </tr>
                         </tbody>
                     </table>

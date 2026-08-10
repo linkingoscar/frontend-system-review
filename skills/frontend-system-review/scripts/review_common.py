@@ -12,6 +12,8 @@ from urllib.parse import urlsplit
 
 
 SCHEMA_VERSION = "1.0"
+SKILL_ROOT = Path(__file__).resolve().parent.parent
+VERSION_PATH = SKILL_ROOT / "VERSION"
 
 DIMENSIONS: dict[str, tuple[str, int]] = {
     "business_architecture_fit": ("业务与架构匹配", 8),
@@ -40,6 +42,14 @@ CONCLUSIONS = {
     "acceptable",
     "unable_to_determine",
 }
+
+
+def tool_version() -> str:
+    """Return the released skill version from the single version source."""
+    version = VERSION_PATH.read_text(encoding="utf-8").strip()
+    if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?", version):
+        raise ValueError(f"invalid skill VERSION: {version!r}")
+    return version
 
 
 def load_json(path: Path) -> Any:

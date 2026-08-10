@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
-from review_common import DIMENSIONS, finding_fingerprint, load_json, save_json
+from review_common import DIMENSIONS, finding_fingerprint, load_json, save_json, tool_version
 
 
 LEVELS = {"P0": "error", "P1": "warning", "P2": "note"}
@@ -115,7 +115,7 @@ def to_sarif(report: dict[str, Any], include_likely: bool, category: str) -> tup
                 "tool": {
                     "driver": {
                         "name": "frontend-system-review",
-                        "version": "2.0.0",
+                        "version": tool_version(),
                         "informationUri": "https://github.com/oasis-tcs/sarif-spec",
                         "rules": rules,
                     }

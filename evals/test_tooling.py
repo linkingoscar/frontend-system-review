@@ -12,9 +12,11 @@ import unittest
 from pathlib import Path
 
 
-SKILL_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SKILL_ROOT = REPO_ROOT / "skills" / "frontend-system-review"
 SCRIPTS = SKILL_ROOT / "scripts"
-FIXTURES = SKILL_ROOT / "evals" / "fixtures"
+REPO_TOOLS = REPO_ROOT / "tools"
+FIXTURES = REPO_ROOT / "evals" / "fixtures"
 RISKY_REPO = FIXTURES / "vite-risky"
 VALID_REPORT = FIXTURES / "reports" / "valid-report.json"
 INCREMENTAL_POLICY = FIXTURES / "reports" / "incremental-gate-policy.json"
@@ -189,13 +191,17 @@ class ToolingEval(unittest.TestCase):
                 result = subprocess.run(command, text=True, encoding="utf-8", capture_output=True, check=False)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 audit = json.loads((Path(temporary) / "runtime-audit.json").read_text(encoding="utf-8"))
-                self.assertEqual(audit["schemaVersion"], "runtime-audit-1.2")
+                self.assertEqual(audit["schemaVersion"], "runtime-audit-2.0")
+                self.assertEqual(audit["tool"]["version"], "2.0.0")
                 self.assertEqual(len(audit["results"]), 4)
                 self.assertEqual(len(audit["aggregates"]), 2)
+                self.assertEqual(audit["interactionSummary"]["scenarios"], 4)
+                self.assertEqual(audit["interactionSummary"]["completedSteps"], 8)
+                self.assertEqual(audit["interactionSummary"]["completedVisualDiffs"], 8)
                 self.assertTrue(all(item["runs"] == 2 for item in audit["aggregates"]))
                 mobile = next(item for item in audit["results"] if item["viewport"]["name"] == "mobile")
                 self.assertTrue(mobile["dom"]["layout"]["horizontalOverflow"])
-                self.assertEqual(mobile["dom"]["controls"]["missingLabelCount"], 1)
+                self.assertEqual(mobile["dom"]["controls"]["missingLabelCount"], 0)
                 self.assertEqual(mobile["dom"]["controls"]["formControlTotal"], 1)
                 self.assertGreaterEqual(mobile["dom"]["controls"]["interactiveElementTotal"], 2)
                 self.assertEqual(mobile["dom"]["images"]["missingAltCount"], 1)
@@ -205,6 +211,13 @@ class ToolingEval(unittest.TestCase):
                 self.assertIsNotNone(mobile["dom"]["performanceSnapshot"]["labSignals"])
                 self.assertIn("cls", mobile["dom"]["performanceSnapshot"]["labSignals"])
                 self.assertTrue((Path(temporary) / mobile["artifacts"]["screenshot"]).is_file())
+                self.assertTrue((Path(temporary) / mobile["artifacts"]["stateFilm"]).is_file())
+                scenario = mobile["scenarios"][0]
+                self.assertEqual(scenario["status"], "completed")
+                self.assertEqual([step["id"] for step in scenario["steps"]], ["enter-query", "submit-search"])
+                self.assertTrue(all(step["stateDiff"]["changed"] for step in scenario["steps"]))
+                self.assertTrue(all(step["visualDiff"]["status"] == "completed" for step in scenario["steps"]))
+                self.assertTrue(all((Path(temporary) / step["visualDiff"]["artifact"]).is_file() for step in scenario["steps"]))
         finally:
             server.shutdown()
             server.server_close()
@@ -589,6 +602,139 @@ class ToolingEval(unittest.TestCase):
             invalid = run_python("verify_review_bundle.py", str(output))
             self.assertEqual(invalid.returncode, 1)
             self.assertIn("SHA-256 mismatch", invalid.stdout)
+
+    def test_33_standards_snapshot_has_an_enforced_review_window(self) -> None:
+        current = run_python("check_standards_freshness.py", "--today", "2026-08-10")
+        self.assertEqual(current.returncode, 0, current.stdout + current.stderr)
+        self.assertTrue(json.loads(current.stdout)["valid"])
+        expired = run_python("check_standards_freshness.py", "--today", "2026-11-09")
+        self.assertEqual(expired.returncode, 1)
+        self.assertIn("expired", expired.stdout)
+
+    def test_34_release_metadata_uses_one_version_source(self) -> None:
+        version = (SKILL_ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        release = json.loads((REPO_ROOT / "release" / "manifest.json").read_text(encoding="utf-8"))
+        package = json.loads((REPO_ROOT / "package.json").read_text(encoding="utf-8"))
+        standards = json.loads((SKILL_ROOT / "references" / "standards-baseline.json").read_text(encoding="utf-8"))
+        self.assertEqual({release["version"], package["version"], standards["skill_version"]}, {version})
+
+    def test_35_release_layout_is_clean_and_machine_verified(self) -> None:
+        result = subprocess.run(
+            [sys.executable, str(REPO_TOOLS / "verify_release.py")],
+            cwd=str(REPO_ROOT),
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        verification = json.loads(result.stdout)
+        self.assertTrue(verification["valid"])
+        self.assertFalse((SKILL_ROOT / "README.md").exists())
+
+    def test_36_runtime_manifest_rejects_unknown_interaction_actions(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            manifest = Path(temporary) / "routes.json"
+            write_json(
+                manifest,
+                {
+                    "routes": [
+                        {
+                            "id": "home",
+                            "path": "/",
+                            "scenarios": [
+                                {"id": "unsafe", "steps": [{"id": "execute", "action": "eval-script"}]}
+                            ],
+                        }
+                    ]
+                },
+            )
+            result = subprocess.run(
+                [
+                    os.environ.get("FRONTEND_REVIEW_NODE", "node"),
+                    str(SCRIPTS / "runtime_audit.cjs"),
+                    "--base-url",
+                    "http://127.0.0.1:9999",
+                    "--manifest",
+                    str(manifest),
+                    "--output",
+                    str(Path(temporary) / "unused"),
+                    "--dry-run",
+                ],
+                text=True,
+                encoding="utf-8",
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("action is not supported", result.stderr)
+
+    def test_37_interaction_failures_are_recorded_and_can_gate(self) -> None:
+        node_modules = os.environ.get("FRONTEND_REVIEW_NODE_MODULES")
+        if not node_modules:
+            self.skipTest("FRONTEND_REVIEW_NODE_MODULES is not set")
+        handler = lambda *args, **kwargs: http.server.SimpleHTTPRequestHandler(
+            *args, directory=str(RUNTIME_SITE), **kwargs
+        )
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            with tempfile.TemporaryDirectory() as temporary:
+                manifest = Path(temporary) / "routes.json"
+                write_json(
+                    manifest,
+                    {
+                        "routes": [
+                            {
+                                "id": "home",
+                                "path": "/",
+                                "viewports": [{"name": "desktop", "width": 1000, "height": 700}],
+                                "scenarios": [
+                                    {
+                                        "id": "missing-control",
+                                        "steps": [
+                                            {
+                                                "id": "click-missing",
+                                                "action": "click",
+                                                "target": {"role": "button", "name": "Does not exist", "exact": True},
+                                                "timeoutMs": 100,
+                                            }
+                                        ],
+                                    }
+                                ],
+                            }
+                        ]
+                    },
+                )
+                output = Path(temporary) / "runtime"
+                result = subprocess.run(
+                    [
+                        os.environ.get("FRONTEND_REVIEW_NODE", "node"),
+                        str(SCRIPTS / "runtime_audit.cjs"),
+                        "--base-url",
+                        f"http://127.0.0.1:{server.server_port}",
+                        "--manifest",
+                        str(manifest),
+                        "--output",
+                        str(output),
+                        "--node-modules",
+                        node_modules,
+                        "--fail-on-interaction-error",
+                    ],
+                    text=True,
+                    encoding="utf-8",
+                    capture_output=True,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                audit = json.loads((output / "runtime-audit.json").read_text(encoding="utf-8"))
+                self.assertEqual(audit["results"][0]["scenarios"][0]["status"], "failed")
+                self.assertEqual(json.loads(result.stdout)["interactionFailures"], 1)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
 
     def test_29_default_gate_matches_release_conclusion(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

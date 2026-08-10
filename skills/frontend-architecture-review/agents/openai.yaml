@@ -1,0 +1,4 @@
+interface:
+  display_name: "前端架构评审"
+  short_description: "评审前端边界、契约、数据流、依赖与演进成本"
+  default_prompt: "使用 $frontend-architecture-review 对这个前端架构做证据驱动的专项评审。"

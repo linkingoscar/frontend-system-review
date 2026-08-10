@@ -14,13 +14,12 @@ from compare_reports import compare_reports
 from export_sarif import to_sarif
 from gate_report import evaluate, merge_policy
 from render_report import render
-from review_common import load_json, save_json
+from review_common import load_json, save_json, tool_version
 from score_report import calculate
 from verify_findings import validate_report
 
 
 SCRIPT_ROOT = Path(__file__).resolve().parent
-BUNDLE_VERSION = "2.0.0"
 ENGINE_FILES = (
     "build_review_bundle.py",
     "compare_reports.py",
@@ -117,7 +116,7 @@ def main() -> int:
             "schema_version": "review-bundle-1.0",
             "tool": {
                 "name": "frontend-system-review",
-                "version": BUNDLE_VERSION,
+                "version": tool_version(),
                 "engine_sha256": {name: sha256_file(SCRIPT_ROOT / name) for name in ENGINE_FILES},
             },
             "inputs": input_hashes,

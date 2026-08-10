@@ -14,13 +14,27 @@
 把本仓库链接粘贴给你正在使用的 AI 工具,让它自行安装或直接按 SKILL.md 工作:
 
 - 在支持 skill 的编码代理(Codex、Claude Code、OpenCode 等)会话中直接说:**"安装 https://github.com/linkingoscar/frontend-system-review 这个 skill"**,AI 会自行克隆到对应平台的目录;
-- 或直接把 [SKILL.md](./SKILL.md) 的内容粘贴进对话,AI 即可按其中的评审纪律与工作流执行——适用于任何对话式 AI(ChatGPT、Claude、Gemini 等),无需本地安装。
+- 或直接把 [SKILL.md](./skills/frontend-system-review/SKILL.md) 的内容粘贴进对话,AI 即可按其中的评审纪律与工作流执行——适用于任何对话式 AI(ChatGPT、Claude、Gemini 等),无需本地安装。
 
-### 方式二:一键安装脚本(推荐)
+### 方式二:skills CLI(推荐)
+
+使用 [skills CLI](https://www.skills.sh/docs/cli) 安装，可以保留统一的来源记录和更新流程：
+
+```bash
+npx skills add linkingoscar/frontend-system-review --skill '*' -g -y
+npx skills list -g
+npx skills update -g -y
+```
+
+去掉 `-g` 可安装到当前项目。只需要总控时，把 `--skill '*'` 改成 `--skill frontend-system-review`。CLI 会从仓库规范目录识别 1 个总控和 6 个专项 skill。
+
+### 方式三:仓库自带安装脚本
 
 ```bash
 # macOS / Linux
-./install.sh                          # 安装到全部平台的用户级目录
+./install.sh                          # 默认把 7 个 skill 安装到 ~/.agents/skills
+./install.sh --platform all           # 显式安装到全部平台目录
+./install.sh --skill frontend-system-review   # 只安装总控
 ./install.sh --platform claude,opencode   # 只安装指定平台
 ./install.sh --dry-run                # 先预览将执行的操作
 ./install.sh --scope project --project-dir /path/to/project   # 项目级安装
@@ -38,7 +52,8 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 | 参数 | 说明 |
 |---|---|
-| `--platform <list>` / `-Platform` | 逗号分隔的平台列表:`generic,codex,claude,opencode,gemini,cline,cursor,copilot`(默认全部) |
+| `--platform <list>` / `-Platform` | 逗号分隔的平台列表:`generic,codex,claude,opencode,gemini,cline,cursor,copilot,all`(默认 `generic`) |
+| `--skill <list>` / `-Skill` | 逗号分隔的 skill 名称或 `all`(默认安装整套) |
 | `--scope user\|project` / `-Scope` | `user`:安装到当前用户目录(默认);`project`:安装到项目目录 |
 | `--project-dir <dir>` / `-ProjectDir` | 与 `--scope project` 配合的项目目录(默认当前目录) |
 | `--dry-run` / `-DryRun` | 只显示将执行的操作,不复制 |
@@ -46,43 +61,33 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 | `--link`(仅 install.sh) | 用符号链接代替复制(默认复制) |
 | `--help` / `-Help` | 显示帮助 |
 
-> Windows 版默认复制(符号链接需要管理员权限);Unix 版默认复制,`--link` 可选。复制时会排除 `.git` 与安装脚本自身。
+> 两个安装器只复制 `skills/` 下的规范 skill，并在复制后逐个校验文件一致性；发布校验会确保该集合与 release manifest 相同。Unix 版可用 `--link` 保持实时同步。
 
-### 方式三:git clone 安装(每平台一条命令)
+### 方式四:克隆仓库后安装
 
 ```bash
-# Codex(官方路径 ~/.agents/skills;社区常用 ~/.codex/skills)
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.agents/skills/frontend-system-review
+git clone https://github.com/linkingoscar/frontend-system-review.git
+cd frontend-system-review
+./install.sh --platform generic --skill all
 
-# Claude Code
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.claude/skills/frontend-system-review
-
-# OpenCode
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.config/opencode/skills/frontend-system-review
-
-# Cursor
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cursor/skills/frontend-system-review
-
-# Cline
-git clone https://github.com/linkingoscar/frontend-system-review.git ~/.cline/skills/frontend-system-review
-
-# 项目级(团队共享):在项目目录下执行
-git clone https://github.com/linkingoscar/frontend-system-review.git .agents/skills/frontend-system-review
+# 固定到可复现版本
+git checkout v2.0.0
+./install.sh --platform generic --skill all --force
 ```
 
-> git clone 会把整个仓库(含 `.git`、`docs/`、安装脚本)都装进去,skill 加载时只读取 `SKILL.md` 及支撑文件,不影响使用;若只想装 skill 本体,用方式二的一键脚本。
+> 不要把仓库根目录直接克隆为 skill 目录；仓库根目录是发布与文档工程，可安装内容只在 `skills/frontend-system-review/`。
 
-### 方式四:平台原生命令
+### 方式五:平台原生命令
 
 ```bash
 # Gemini CLI
 gemini skills install linkingoscar/frontend-system-review --scope user
 
-# 社区工具 npx skills(支持按 agent 分发)
-npx skills add linkingoscar/frontend-system-review -a "Codex" -g -y
+# skills CLI 也支持按 agent 分发
+npx skills add linkingoscar/frontend-system-review --skill '*' -a codex -g -y
 ```
 
-### 方式五:symlink Hub(一次安装,所有 agent 可见)
+### 方式六:symlink Hub(一次安装,所有 agent 可见)
 
 以 `~/.agents/skills` 为唯一真实目录,其余目录全部符号链接过去(Codex、Gemini、Cursor、Copilot、Zed、Windsurf、OpenCode 原生读取 `~/.agents/skills`):
 

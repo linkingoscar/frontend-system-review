@@ -6,6 +6,25 @@
       "viewports": [
         { "name": "desktop", "width": 1440, "height": 900 },
         { "name": "mobile", "width": 375, "height": 812, "isMobile": true, "hasTouch": true }
+      ],
+      "scenarios": [
+        {
+          "id": "search-flow",
+          "steps": [
+            {
+              "id": "enter-query",
+              "action": "fill",
+              "target": { "label": "Search", "exact": true },
+              "value": "audit"
+            },
+            {
+              "id": "submit-search",
+              "action": "click",
+              "target": { "role": "button", "name": "Search", "exact": true },
+              "waitFor": { "target": { "text": "Result for audit", "exact": true }, "state": "visible" }
+            }
+          ]
+        }
       ]
     }
   ]

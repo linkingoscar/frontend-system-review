@@ -1,6 +1,8 @@
 # Frontend System Review
 
 [![Version](https://img.shields.io/github/v/release/linkingoscar/frontend-system-review?color=orange&label=Version)](https://github.com/linkingoscar/frontend-system-review/releases)
+[![CI](https://github.com/linkingoscar/frontend-system-review/actions/workflows/ci.yml/badge.svg)](https://github.com/linkingoscar/frontend-system-review/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Standard-4CAF50)](https://agentskills.io/specification)
 [![OpenCode](https://img.shields.io/badge/OpenCode-Compatible-000000)](#)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-CC0000?logo=anthropic&logoColor=white)](#)
@@ -28,9 +30,11 @@ Covers business fit, tech stack & dependencies, module boundaries, type & API co
 - **Evidence-driven** — every finding carries `file:line`, tool output, or runtime measurement; facts, inferences, and unknowns are strictly separated; files, line numbers, command results, screenshots, or metrics are never fabricated.
 - **Four review modes** — repository system review / change review / runtime experience review / proposal review.
 - **Three depths** — quick scan / standard review / deep audit (standard is the default).
+- **Specialist orchestration** — one orchestrator plus six independently installable architecture, change, runtime, accessibility, visual, and release skills; broad reviews load only the minimum relevant set.
 - **Strict quality gates** — P0/P1/P2 severity, severity-vs-confidence separation, 12-dimension scoring, evidence coverage, ship-readiness verdicts, with mechanical validation and CI gating.
-- **Deterministic toolchain** — 13 scripts (Python stdlib / Node only): inventory, change scope, finding verification, scoring, rendering, baseline diff, gate, SARIF export, one-shot review bundle.
-- **Reproducible auditing** — Playwright runtime evidence collection (screenshots, console, network, LCP/CLS, contrast, axe), with 32 eval tests guarding tool behavior.
+- **Deterministic toolchain** — 14 scripts (Python stdlib / Node only): inventory, change scope, finding verification, scoring, rendering, baseline diff, gate, SARIF export, review bundles, and standards-freshness checks.
+- **Reproducible auditing** — declarative Playwright flows produce step-by-step state films, screenshot SHA/PNG diffs, console/network/LCP/CLS/contrast/axe evidence; 37 eval tests guard behavior.
+- **Verifiable releases** — `VERSION` is the single version source; CI checks source/install/archive parity and enforces a 90-day WCAG/CWV/SARIF snapshot review window.
 
 ## Review Modes
 
@@ -94,6 +98,8 @@ Any confirmed P0 overrides the total score; unchecked dimensions are marked `N/A
 
 ## References
 
+Paths below are relative to the installed skill root. The canonical repository source is `skills/frontend-system-review/`.
+
 | File | Purpose |
 |---|---|
 | `references/checklist.md` | Engineering & architecture review checklist (12 sections: business, dependencies & build, architecture & boundaries, types & data, state & rendering, components & design systems, testing, CI/CD, security, observability, scenario addenda, red flags & counter-arguments) |
@@ -110,18 +116,24 @@ Any confirmed P0 overrides the total score; unchecked dimensions are marked `N/A
 python -m unittest discover -s evals
 ```
 
-32 tests invoke the scripts through subprocess, covering: repo inventory; evidence validation (out-of-range line numbers, path escape, duplicate fingerprints); P0 gate; scoring & coverage; Markdown rendering stability; command redaction & exit codes; runtime browser collection (desktop + mobile viewports, overflow/contrast/axe); `--fail-on-budget`; baseline gating; SARIF export; bundle build and SHA-256 tamper detection. Runtime-dependent tests run when `FRONTEND_REVIEW_NODE_MODULES` is set, otherwise they skip.
+37 tests invoke the scripts through subprocess, covering inventory, evidence validation, P0 gates, scoring, rendering, command capture, desktop/mobile browser collection, declarative interaction films, PNG diffs, interaction/performance gates, baselines, SARIF, bundles and tamper detection, plus multi-skill release layout, version, and standards-freshness consistency. Runtime-dependent tests run when `FRONTEND_REVIEW_NODE_MODULES` is set, otherwise they skip.
 
 ## Cross-Platform Installation
 
-Compatible with the [Agent Skills open standard](https://agentskills.io/specification). Works with Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more — only the install directory differs per platform; the format requires zero changes. Full guide: [INSTALLATION.en.md](./INSTALLATION.en.md). **Easiest: paste the repo link to your AI and let it read SKILL.md directly.**
+Compatible with the [Agent Skills open standard](https://agentskills.io/specification). Works with Codex, Claude Code, OpenCode, Gemini CLI, Cline, Cursor, Copilot, Windsurf, Zed, and more. See [INSTALLATION.en.md](./INSTALLATION.en.md). All seven canonical skill sources live under [`skills/`](./skills).
 
 ```bash
-./install.sh            # macOS / Linux: install to all platforms
+npx skills add linkingoscar/frontend-system-review --skill '*' -g -y
+# For the orchestrator only, replace --skill '*' with --skill frontend-system-review
+# Update the installed suite:
+npx skills update -g -y
+
+./install.sh            # macOS / Linux: install to ~/.agents/skills by default
 # Windows:
 powershell -ExecutionPolicy Bypass -File .\install.ps1
-# Specific platforms only:
+# Specific platforms or all platforms:
 ./install.sh --platform claude,opencode
+./install.sh --platform all
 ```
 
 | Platform | User-level directory | Verify in session |
@@ -139,25 +151,32 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 1. **Install**: see [Cross-Platform Installation](#cross-platform-installation) and [INSTALLATION.en.md](./INSTALLATION.en.md).
 2. **Request a review**: provide a repo path, PR link, live URL, or proposal document; the skill picks the mode and depth automatically.
-3. **Formal delivery**: persist the report as JSON conforming to `scripts/report.schema.json`, then produce the validated review bundle (JSON/Markdown/SARIF/gate/manifest) with `build_review_bundle.py`.
+3. **Formal delivery**: persist the report as JSON conforming to `skills/frontend-system-review/scripts/report.schema.json`, then produce the validated review bundle (JSON/Markdown/SARIF/gate/manifest) with `build_review_bundle.py`.
 
 ## Directory Structure
 
 ```text
 frontend-system-review/
-├── SKILL.md                     # skill definition (disciplines, modes, workflow)
-├── agents/openai.yaml           # skill frontend metadata (Codex/ChatGPT desktop)
+├── skills/                       # 7 canonical, independently discoverable skills
+│   ├── frontend-system-review/   # orchestrator, reports, tools, standards snapshot
+│   ├── frontend-architecture-review/
+│   ├── frontend-change-review/
+│   ├── web-runtime-review/
+│   ├── accessibility-review/
+│   ├── visual-design-review/
+│   └── frontend-release-review/
 ├── INSTALLATION.md / .en.md     # cross-platform install guides (CN/EN)
 ├── install.sh / install.ps1     # one-click install scripts (macOS/Linux / Windows)
-├── references/                  # 7 on-demand review reference docs
-├── scripts/                     # 13 deterministic tool scripts + 3 schema contracts
-├── evals/                       # 32 unittest tests & fixtures
+├── tools/                       # release verification and deterministic packaging
+├── release/manifest.json        # release boundary and version contract
+├── evals/                       # 37 unittest tests & fixtures
+├── .github/workflows/           # cross-platform CI and tagged releases
 └── docs/                        # GitHub Pages site
 ```
 
 ## License
 
-Not specified. Confirm with the author before use.
+[MIT](./LICENSE)
 
 ---
 

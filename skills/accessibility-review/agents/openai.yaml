@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web 可访问性评审"
+  short_description: "结合人工任务和自动线索审计 WCAG 2.2 AA"
+  default_prompt: "使用 $accessibility-review 对这个 Web 界面做 WCAG 2.2 AA 专项评审。"

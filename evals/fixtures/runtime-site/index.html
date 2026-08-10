@@ -9,11 +9,19 @@
     <main class="wide">
       <h1>Runtime fixture</h1>
       <p class="muted">Low contrast fixture text</p>
-      <input placeholder="Search">
+      <label>Search <input id="search" placeholder="Search"></label>
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==">
       <button></button>
+      <button id="search-button">Search</button>
+      <p id="search-result" role="status" aria-live="polite"></p>
     </main>
     <script src="/missing.js"></script>
-    <script>console.error("fixture console error")</script>
+    <script>
+      console.error("fixture console error");
+      document.querySelector("#search-button").addEventListener("click", () => {
+        const query = document.querySelector("#search").value;
+        document.querySelector("#search-result").textContent = query ? `Result for ${query}` : "Enter a query";
+      });
+    </script>
   </body>
 </html>

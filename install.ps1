@@ -1,39 +1,29 @@
-﻿<#
+<#
 .SYNOPSIS
-    将 frontend-system-review skill 安装到各 AI 平台的 skills 目录。
+    安装 Frontend System Review suite。
 
 .DESCRIPTION
-    支持 Codex / Claude Code / OpenCode / Gemini CLI / Cline / Cursor / Copilot / 通用 .agents。
-    兼容 PowerShell 5.1+(推荐 pwsh 7)。默认复制模式,不建符号链接(避免 Windows 权限问题)。
+    从仓库 skills/ 规范源安装总控和六个专项 skill。默认安装全部 skill 到通用用户目录。
 
 .PARAMETER Platform
-    逗号分隔的平台列表:generic,codex,claude,opencode,gemini,cline,cursor,copilot(默认全部)。
+    逗号分隔的平台:generic,codex,claude,opencode,gemini,cline,cursor,copilot,all(默认 generic)。
+
+.PARAMETER Skill
+    逗号分隔的 skill 名称或 all(默认 all)。
 
 .PARAMETER Scope
-    user(安装到当前用户目录,默认)或 project(安装到项目目录)。
-
-.PARAMETER ProjectDir
-    与 -Scope project 配合使用的项目目录(默认当前目录)。
-
-.PARAMETER DryRun
-    只显示将执行的操作,不复制。
-
-.PARAMETER Force
-    目标已存在时先删除再安装。
-
-.PARAMETER Help
-    显示帮助。
+    user(默认)或 project。
 
 .EXAMPLE
     .\install.ps1
-    .\install.ps1 -Platform generic,claude,opencode
-    .\install.ps1 -Scope project -ProjectDir D:\my-project -Force
-    .\install.ps1 -DryRun
+    .\install.ps1 -Skill frontend-system-review -Platform codex
+    .\install.ps1 -Platform all -Force
 #>
 
 [CmdletBinding()]
 param(
-    [string]$Platform = "generic,codex,claude,opencode,gemini,cline,cursor,copilot",
+    [string]$Platform = "generic",
+    [string]$Skill = "all",
     [ValidateSet("user", "project")]
     [string]$Scope = "user",
     [string]$ProjectDir = "",
@@ -43,29 +33,35 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$SkillName = "frontend-system-review"
-$SourceDir = $PSScriptRoot
-
+$SourceRoot = Join-Path $PSScriptRoot "skills"
 $ValidPlatforms = @("generic", "codex", "claude", "opencode", "gemini", "cline", "cursor", "copilot")
+$AvailableSkills = @(Get-ChildItem -LiteralPath $SourceRoot -Directory | Where-Object {
+    Test-Path -LiteralPath (Join-Path $_.FullName "SKILL.md") -PathType Leaf
+} | Sort-Object Name | Select-Object -ExpandProperty Name)
 
-if ($Help) {
-    Get-Help $MyInvocation.MyCommand.Path
-    exit 0
-}
+if ($Help) { Get-Help $MyInvocation.MyCommand.Path; exit 0 }
+if ($AvailableSkills.Count -eq 0) { Write-Error "no canonical skills found below $SourceRoot"; exit 1 }
 
-# --- 解析并校验平台列表 ---
 $Platforms = @()
-foreach ($p in ($Platform -split ",")) {
-    $p = $p.Trim()
-    if ($p -ne "" -and $ValidPlatforms -notcontains $p) {
-        Write-Error "unknown platform '$p' (valid: $($ValidPlatforms -join ', '))"
-        exit 2
-    }
-    if ($p -ne "") { $Platforms += $p }
+foreach ($item in ($Platform -split ",")) {
+    $item = $item.Trim()
+    if ($item -eq "all") { $Platforms += $ValidPlatforms; continue }
+    if ($item -and $ValidPlatforms -notcontains $item) { Write-Error "unknown platform '$item'"; exit 2 }
+    if ($item) { $Platforms += $item }
 }
-if ($Platforms.Count -eq 0) { $Platforms = $ValidPlatforms }
+if ($Platforms.Count -eq 0) { Write-Error "at least one platform is required"; exit 2 }
+$Platforms = @($Platforms | Select-Object -Unique)
 
-# --- 平台目录映射 ---
+$Skills = @()
+foreach ($item in ($Skill -split ",")) {
+    $item = $item.Trim()
+    if ($item -eq "all") { $Skills += $AvailableSkills; continue }
+    if ($item -and $AvailableSkills -notcontains $item) { Write-Error "unknown skill '$item' (available: $($AvailableSkills -join ', '))"; exit 2 }
+    if ($item) { $Skills += $item }
+}
+if ($Skills.Count -eq 0) { Write-Error "at least one skill is required"; exit 2 }
+$Skills = @($Skills | Select-Object -Unique)
+
 $UserDirs = @{
     generic  = Join-Path $HOME ".agents\skills"
     codex    = Join-Path $HOME ".codex\skills"
@@ -76,69 +72,70 @@ $UserDirs = @{
     cursor   = Join-Path $HOME ".cursor\skills"
     copilot  = Join-Path $HOME ".copilot\skills"
 }
-$ProjectBase = (Get-Location).Path
-if ($ProjectDir -ne "") { $ProjectBase = $ProjectDir }
+$ProjectBase = if ($ProjectDir) { $ProjectDir } else { (Get-Location).Path }
 
-function Get-PlatformDir([string]$p) {
-    if ($Scope -eq "project") {
-        switch ($p) {
-            "generic"  { return Join-Path $ProjectBase ".agents\skills" }
-            "codex"    { return Join-Path $ProjectBase ".codex\skills" }
-            "claude"   { return Join-Path $ProjectBase ".claude\skills" }
-            "opencode" { return Join-Path $ProjectBase ".opencode\skills" }
-            "gemini"   { return Join-Path $ProjectBase ".gemini\skills" }
-            "cline"    { return Join-Path $ProjectBase ".cline\skills" }
-            "cursor"   { return Join-Path $ProjectBase ".cursor\skills" }
-            "copilot"  { return Join-Path $ProjectBase ".copilot\skills" }
-        }
+function Get-PlatformDir([string]$name) {
+    if ($Scope -eq "user") { return $UserDirs[$name] }
+    $suffix = switch ($name) {
+        "generic" { ".agents\skills" }
+        "codex" { ".codex\skills" }
+        "claude" { ".claude\skills" }
+        "opencode" { ".opencode\skills" }
+        "gemini" { ".gemini\skills" }
+        "cline" { ".cline\skills" }
+        "cursor" { ".cursor\skills" }
+        "copilot" { ".copilot\skills" }
     }
-    return $UserDirs[$p]
+    return Join-Path $ProjectBase $suffix
 }
 
-# --- 执行安装 ---
+function Get-FileMap([string]$root) {
+    $map = @{}
+    $rootPrefix = [IO.Path]::GetFullPath($root).TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
+    Get-ChildItem -LiteralPath $root -File -Recurse | Where-Object {
+        $_.FullName -notmatch '[\\/]__pycache__[\\/]' -and $_.Extension -ne '.pyc' -and $_.Name -ne '.DS_Store'
+    } | ForEach-Object {
+        $relative = $_.FullName.Substring($rootPrefix.Length).Replace('\', '/')
+        $map[$relative] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
+    }
+    return $map
+}
+
+function Test-InstallParity([string]$source, [string]$destination) {
+    $sourceMap = Get-FileMap $source
+    $destinationMap = Get-FileMap $destination
+    if ($sourceMap.Count -ne $destinationMap.Count) { return $false }
+    foreach ($relative in $sourceMap.Keys) {
+        if (-not $destinationMap.ContainsKey($relative) -or $destinationMap[$relative] -ne $sourceMap[$relative]) { return $false }
+    }
+    return $true
+}
+
 $ok = 0; $skip = 0; $fail = 0
-
-foreach ($p in $Platforms) {
-    $base = Get-PlatformDir $p
-    $dest = Join-Path $base $SkillName
-    $display = $dest.Replace($HOME, "~")
-
-    if (Test-Path -LiteralPath $dest) {
-        if (-not $Force) {
-            Write-Host "[skip] $p -> $display : already exists (use -Force)"
-            $skip++
-            continue
+foreach ($platformName in $Platforms) {
+    $base = Get-PlatformDir $platformName
+    foreach ($skillName in $Skills) {
+        $source = Join-Path $SourceRoot $skillName
+        $dest = Join-Path $base $skillName
+        $resolvedBase = [IO.Path]::GetFullPath($base).TrimEnd('\', '/')
+        $resolvedDest = [IO.Path]::GetFullPath($dest)
+        if ([IO.Path]::GetDirectoryName($resolvedDest).TrimEnd('\', '/') -ne $resolvedBase) {
+            Write-Host "[fail] unsafe target: $resolvedDest" -ForegroundColor Red; $fail++; continue
         }
-        if ($DryRun) {
-            Write-Host "[dry-run] $p -> $display (would remove existing, then install)"
-            $ok++
-            continue
+        $display = $dest.Replace($HOME, "~")
+        if (Test-Path -LiteralPath $dest) {
+            if (-not $Force) { Write-Host "[skip] $platformName/$skillName -> $display (use -Force)"; $skip++; continue }
+            if (-not $DryRun) { Remove-Item -LiteralPath $dest -Recurse -Force }
         }
-        Remove-Item -LiteralPath $dest -Recurse -Force
-    }
-
-    if ($DryRun) {
-        Write-Host "[dry-run] $p -> $display"
-        $ok++
-        continue
-    }
-
-    try {
-        New-Item -ItemType Directory -Force -Path $base | Out-Null
-        Copy-Item -LiteralPath $SourceDir -Destination $dest -Recurse -Force
-        # 排除 .git 与安装脚本自身
-        foreach ($exclude in @(".git", "install.sh", "install.ps1")) {
-            $target = Join-Path $dest $exclude
-            if (Test-Path -LiteralPath $target) {
-                Remove-Item -LiteralPath $target -Recurse -Force
-            }
+        if ($DryRun) { Write-Host "[dry-run] $platformName/$skillName -> $display"; $ok++; continue }
+        try {
+            New-Item -ItemType Directory -Force -Path $base | Out-Null
+            Copy-Item -LiteralPath $source -Destination $dest -Recurse -Force
+            if (-not (Test-InstallParity $source $dest)) { throw "post-install SHA-256 verification failed" }
+            Write-Host "[ok] $platformName/$skillName -> $display"; $ok++
+        } catch {
+            Write-Host "[fail] $platformName/$skillName -> $display : $($_.Exception.Message)" -ForegroundColor Red; $fail++
         }
-        Write-Host "[ok] $p -> $display"
-        $ok++
-    }
-    catch {
-        Write-Host "[fail] $p -> $display : $($_.Exception.Message)" -ForegroundColor Red
-        $fail++
     }
 }
 
@@ -146,7 +143,4 @@ Write-Host ""
 Write-Host "Summary: $ok installed, $skip skipped, $fail failed"
 if ($DryRun) { Write-Host "Dry run only - nothing was copied." }
 if ($fail -gt 0) { exit 1 }
-if (-not $DryRun -and $ok -gt 0) {
-    Write-Host "Verify: run /skills inside the target tool's session."
-}
 exit 0

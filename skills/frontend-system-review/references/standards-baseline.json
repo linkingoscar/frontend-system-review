@@ -1,0 +1,44 @@
+{
+  "schema_version": "frontend-review-standards-1.0",
+  "skill_version": "2.0.0",
+  "reviewed_on": "2026-08-10",
+  "review_due": "2026-11-08",
+  "policy": {
+    "maximum_review_age_days": 90,
+    "offline_first": true,
+    "rule": "Fail freshness validation after review_due until a maintainer checks the authoritative sources and updates this snapshot."
+  },
+  "standards": {
+    "wcag": {
+      "version": "2.2",
+      "conformance_target": "AA",
+      "status": "W3C Recommendation",
+      "source": "https://www.w3.org/TR/WCAG22/"
+    },
+    "core_web_vitals": {
+      "assessment_percentile": 75,
+      "good_thresholds": {
+        "lcp_ms": 2500,
+        "inp_ms": 200,
+        "cls": 0.1
+      },
+      "source": "https://web.dev/articles/vitals"
+    },
+    "sarif": {
+      "version": "2.1.0",
+      "profile": "GitHub code scanning supported subset",
+      "source": "https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/sarif-support-for-code-scanning"
+    }
+  },
+  "runtime_compatibility": {
+    "python": ">=3.10",
+    "node": ">=18",
+    "browser": "Playwright Chromium or a locally installed Chrome, Edge, or Chromium executable",
+    "operating_systems": [
+      "Linux",
+      "macOS",
+      "Windows"
+    ],
+    "audit_rule": "Record the exact Python, Node, Playwright, axe-core, browser and operating-system versions in formal runtime evidence."
+  }
+}

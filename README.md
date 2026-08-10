@@ -1,6 +1,8 @@
 # Frontend System Review
 
 [![Version](https://img.shields.io/github/v/release/linkingoscar/frontend-system-review?color=orange&label=Version)](https://github.com/linkingoscar/frontend-system-review/releases)
+[![CI](https://github.com/linkingoscar/frontend-system-review/actions/workflows/ci.yml/badge.svg)](https://github.com/linkingoscar/frontend-system-review/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Standard-4CAF50)](https://agentskills.io/specification)
 [![OpenCode](https://img.shields.io/badge/OpenCode-Compatible-000000)](#)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-CC0000?logo=anthropic&logoColor=white)](#)
@@ -28,9 +30,11 @@
 - **证据驱动** —— 每条发现都带 `file:line`、工具输出或运行时测量;事实、推断与未知严格分离,绝不编造文件、行号、命令结果、截图或指标。
 - **四种评审模式** —— 仓库系统评审 / 变更评审 / 运行时体验评审 / 方案评审。
 - **三种深度** —— 快速扫描 / 标准评审 / 深度审计(默认标准评审)。
+- **专项编排** —— 1 个总控 + 架构、变更、运行时、可访问性、视觉、发布 6 个可独立安装的专项 skill；综合请求只加载需要的最小集合。
 - **严格质量门** —— P0/P1/P2 分级、严重度与置信度分离、12 维度评分、证据覆盖率、上线结论,支持机械校验与 CI 门禁。
-- **确定性工具链** —— 13 个仅依赖标准库/Python + Node 的脚本:盘点、变更范围、证据校验、评分、渲染、基线对比、门禁、SARIF 导出、一键评审包。
-- **可重复审计** —— Playwright 运行时证据采集(截图、console、网络、LCP/CLS、对比度、axe),32 项 eval 测试保障工具行为。
+- **确定性工具链** —— 14 个仅依赖标准库/Python + Node 的脚本:盘点、变更范围、证据校验、评分、渲染、基线对比、门禁、SARIF 导出、一键评审包与标准时效校验。
+- **可重复审计** —— Playwright 声明式流程审计，生成逐步状态胶片、截图 SHA/PNG diff、console/网络/LCP/CLS/对比度/axe 证据；37 项 eval 测试保障工具行为。
+- **可验证发布** —— `VERSION` 是唯一版本源；CI 校验源码、安装副本和 Release ZIP 一致性，并按 90 天窗口检查 WCAG/CWV/SARIF 规则快照。
 
 ## 评审模式
 
@@ -94,6 +98,8 @@
 
 ## 参考资料
 
+下列路径均相对于安装后的 skill 根目录；仓库中的规范源位于 `skills/frontend-system-review/`。
+
 | 文件 | 用途 |
 |---|---|
 | `references/checklist.md` | 工程与架构评审清单(12 章节:业务、依赖构建、架构边界、类型数据、状态渲染、组件设计系统、测试、CI/CD、安全、可观测性、场景增补、红旗反证) |
@@ -110,18 +116,24 @@
 python -m unittest discover -s evals
 ```
 
-32 项测试通过 subprocess 真实调用脚本,覆盖:仓库盘点、证据校验(越界行号/路径逃逸/重复指纹)、P0 门、评分与覆盖率、Markdown 渲染稳定性、命令脱敏与退出码、运行时浏览器采集(桌面+移动视口、溢出/对比度/axe)、`--fail-on-budget`、基线门禁、SARIF、评审包构建与 SHA-256 篡改检测。运行时相关测试在设置 `FRONTEND_REVIEW_NODE_MODULES` 后执行,否则自动跳过。
+37 项测试通过 subprocess 真实调用脚本,覆盖:仓库盘点、证据校验、P0 门、评分与覆盖率、渲染、命令脱敏、桌面/移动浏览器采集、声明式交互胶片、PNG diff、交互/性能门禁、基线、SARIF、评审包与篡改检测，以及多 skill 发布边界、版本和标准时效一致性。运行时相关测试在设置 `FRONTEND_REVIEW_NODE_MODULES` 后执行,否则自动跳过。
 
 ## 跨平台安装
 
-兼容 [Agent Skills 开放规范](https://agentskills.io/specification),支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台——各平台仅安装目录不同,格式零改动。完整指南见 [INSTALLATION.md](./INSTALLATION.md)。**最简单的方式:把仓库链接粘贴给你的 AI,让它直接读取 SKILL.md 使用。**
+兼容 [Agent Skills 开放规范](https://agentskills.io/specification),支持 Codex、Claude Code、OpenCode、Gemini CLI、Cline、Cursor、Copilot、Windsurf、Zed 等主流平台。完整指南见 [INSTALLATION.md](./INSTALLATION.md)。7 个规范 skill 源均位于 [`skills/`](./skills)。
 
 ```bash
-./install.sh            # macOS / Linux 一键安装到全部平台
+npx skills add linkingoscar/frontend-system-review --skill '*' -g -y
+# 只安装总控:把 --skill '*' 替换为 --skill frontend-system-review
+# 更新整套已安装 skill:
+npx skills update -g -y
+
+./install.sh            # macOS / Linux，默认安装到 ~/.agents/skills
 # Windows:
 powershell -ExecutionPolicy Bypass -File .\install.ps1
-# 仅安装指定平台:
+# 安装指定平台或全部平台:
 ./install.sh --platform claude,opencode
+./install.sh --platform all
 ```
 
 | 平台 | 用户级目录 | 会话内验证 |
@@ -139,25 +151,32 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 1. **安装**:见 [跨平台安装](#跨平台安装) 与 [INSTALLATION.md](./INSTALLATION.md)。
 2. **发起评审**:提供仓库路径、PR 链接、线上 URL 或方案文档;skill 自动选择评审模式与深度。
-3. **正式交付**:报告保存为符合 `scripts/report.schema.json` 的 JSON,通过 `build_review_bundle.py` 一键生成已校验评审包(JSON/Markdown/SARIF/门禁/manifest)。
+3. **正式交付**:报告保存为符合 `skills/frontend-system-review/scripts/report.schema.json` 的 JSON,通过 `build_review_bundle.py` 一键生成已校验评审包(JSON/Markdown/SARIF/门禁/manifest)。
 
 ## 目录结构
 
 ```text
 frontend-system-review/
-├── SKILL.md                     # skill 主定义(评审纪律、模式、工作流)
-├── agents/openai.yaml           # skill 前端展示配置(Codex/ChatGPT 桌面端元数据)
+├── skills/                       # 7 个规范、可独立发现的 skill 源
+│   ├── frontend-system-review/   # 总控、统一报告、工具链与规则快照
+│   ├── frontend-architecture-review/
+│   ├── frontend-change-review/
+│   ├── web-runtime-review/
+│   ├── accessibility-review/
+│   ├── visual-design-review/
+│   └── frontend-release-review/
 ├── INSTALLATION.md / .en.md     # 跨平台安装指南(中/英)
 ├── install.sh / install.ps1     # 一键安装脚本(macOS/Linux / Windows)
-├── references/                  # 7 份按需加载的评审参考资料
-├── scripts/                     # 13 个确定性工具脚本 + 3 个 schema 契约
-├── evals/                       # 32 项 unittest 测试与 fixtures
+├── tools/                       # 发布校验与确定性打包
+├── release/manifest.json        # 发布边界和版本契约
+├── evals/                       # 37 项 unittest 测试与 fixtures
+├── .github/workflows/           # 跨平台 CI 与 tag Release
 └── docs/                        # GitHub Pages 站点
 ```
 
 ## License
 
-未指定。使用前请与作者确认许可。
+[MIT](./LICENSE)
 
 ---
 
